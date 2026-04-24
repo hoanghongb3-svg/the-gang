@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐺 Ma Sói Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blood:#8B0000;--blood-light:#c0392b;--gold:#c9a84c;
+    --gold-light:#f0d080;--moon:#e8dcc8;--dark:#0a0608;--dark2:#140d10;--dark3:#1e1218;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Crimson Text',serif;background:var(--dark);color:var(--moon);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(139,0,0,.15) 0%,transparent 70%),
+               radial-gradient(ellipse 60% 40% at 20% 80%,rgba(50,20,60,.3) 0%,transparent 60%);}
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+  .star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d) var(--delay) infinite;}
+  @keyframes twinkle{0%,100%{opacity:var(--a)}50%{opacity:calc(var(--a)*.3)}}
+  .screen{display:none;position:relative;z-index:10;min-height:100vh;padding:20px;}
+  .screen.active{display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+  /* LOADING */
+  #loadingScreen{position:fixed;inset:0;background:var(--dark);z-index:200;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+  #loadingScreen.hide{display:none;}
+  .spinner{width:48px;height:48px;border:3px solid rgba(201,168,76,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading-text{font-family:'Cinzel',serif;color:var(--gold);font-size:.9rem;letter-spacing:.2em;}
+
+  /* MOON */
+  .moon-orb{width:120px;height:120px;background:radial-gradient(circle at 35% 35%,#fff8e7,#e8dcc8 40%,#c4a96e 70%,#8b6914);border-radius:50%;margin:0 auto 10px;
+    box-shadow:0 0 60px rgba(201,168,76,.5),0 0 120px rgba(201,168,76,.2),inset -20px -10px 40px rgba(0,0,0,.4);
+    animation:moonPulse 4s ease-in-out infinite;position:relative;}
+  .moon-orb::after{content:'🐺';position:absolute;font-size:50px;top:50%;left:50%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 10px rgba(0,0,0,.8));}
+  @keyframes moonPulse{0%,100%{box-shadow:0 0 60px rgba(201,168,76,.5),0 0 120px rgba(201,168,76,.2),inset -20px -10px 40px rgba(0,0,0,.4)}
+    50%{box-shadow:0 0 80px rgba(201,168,76,.7),0 0 160px rgba(201,168,76,.3),inset -20px -10px 40px rgba(0,0,0,.4)}}
+
+  /* TYPOGRAPHY */
+  .game-title{font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,5.5rem);font-weight:900;letter-spacing:.08em;line-height:1;margin-bottom:8px;
+    background:linear-gradient(180deg,#f0d080 0%,#c9a84c 40%,#8b6014 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    filter:drop-shadow(0 2px 20px rgba(201,168,76,.5));}
+  .game-subtitle{font-style:italic;font-size:1.2rem;color:rgba(200,180,160,.7);letter-spacing:.2em;margin-bottom:50px;}
+
+  /* BUTTONS */
+  .btn-primary{padding:16px 40px;font-family:'Cinzel',serif;font-size:1rem;font-weight:600;letter-spacing:.15em;
+    background:linear-gradient(135deg,#8B0000,#c0392b);color:var(--gold-light);border:1px solid rgba(201,168,76,.4);
+    border-radius:4px;cursor:pointer;transition:all .3s;text-transform:uppercase;}
+  .btn-primary:hover{background:linear-gradient(135deg,#a00000,#e74c3c);box-shadow:0 0 30px rgba(139,0,0,.6);transform:translateY(-2px);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .btn-secondary{padding:14px 40px;font-family:'Cinzel',serif;font-size:1rem;font-weight:600;letter-spacing:.12em;
+    background:transparent;color:var(--gold);border:1px solid rgba(201,168,76,.5);border-radius:4px;cursor:pointer;transition:all .3s;text-transform:uppercase;}
+  .btn-secondary:hover{background:rgba(201,168,76,.1);border-color:var(--gold);transform:translateY(-2px);}
+  .btn-ghost{padding:11px 28px;font-family:'Crimson Text',serif;font-size:1rem;background:transparent;
+    color:rgba(200,180,160,.6);border:1px solid rgba(200,180,160,.2);border-radius:4px;cursor:pointer;transition:all .3s;}
+  .btn-ghost:hover{color:var(--moon);border-color:rgba(200,180,160,.5);background:rgba(200,180,160,.05);}
+  .btn-confirm{padding:11px 30px;font-family:'Cinzel',serif;font-size:.92rem;font-weight:600;letter-spacing:.1em;
+    background:linear-gradient(135deg,#8B0000,#c0392b);color:var(--gold-light);border:1px solid rgba(201,168,76,.4);
+    border-radius:4px;cursor:pointer;transition:all .3s;text-transform:uppercase;}
+  .btn-confirm:hover:not(:disabled){background:linear-gradient(135deg,#a00000,#e74c3c);box-shadow:0 0 20px rgba(139,0,0,.5);}
+  .btn-confirm:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-danger{padding:7px 14px;font-family:'Cinzel',serif;font-size:.72rem;background:rgba(139,0,0,.3);
+    color:#ff6b6b;border:1px solid rgba(139,0,0,.5);border-radius:4px;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.08em;}
+  .btn-danger:hover{background:rgba(139,0,0,.5);}
+
+  /* PANEL */
+  .panel{background:linear-gradient(135deg,rgba(20,13,16,.95),rgba(30,18,24,.95));border:1px solid rgba(201,168,76,.25);
+    border-radius:8px;padding:28px;width:100%;max-width:460px;
+    box-shadow:0 20px 60px rgba(0,0,0,.8),inset 0 1px 0 rgba(201,168,76,.1);}
+  .panel-title{font-family:'Cinzel',serif;font-size:1.35rem;font-weight:600;color:var(--gold);text-align:center;
+    margin-bottom:22px;letter-spacing:.1em;padding-bottom:14px;border-bottom:1px solid rgba(201,168,76,.2);}
+  .field-group{margin-bottom:14px;}
+  .field-label{display:block;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.15em;color:rgba(200,180,160,.6);margin-bottom:7px;text-transform:uppercase;}
+  .field-input{width:100%;padding:11px 15px;background:rgba(10,6,8,.6);border:1px solid rgba(201,168,76,.3);border-radius:4px;
+    color:var(--moon);font-family:'Crimson Text',serif;font-size:1.05rem;outline:none;transition:border-color .3s,box-shadow .3s;}
+  .field-input:focus{border-color:var(--gold);box-shadow:0 0 15px rgba(201,168,76,.2);}
+  .field-input::placeholder{color:rgba(200,180,160,.3);}
+
+  /* ROOM CODE */
+  .room-code-badge{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:900;letter-spacing:.35em;color:var(--gold-light);
+    text-align:center;padding:8px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(201,168,76,.3);border-radius:6px;
+    cursor:pointer;transition:all .2s;filter:drop-shadow(0 0 8px rgba(201,168,76,.4));}
+  .room-code-badge:hover{background:rgba(201,168,76,.08);}
+  .room-code-badge small{display:block;font-size:.42rem;color:rgba(200,180,160,.4);letter-spacing:.08em;margin-top:2px;}
+
+  /* CARD */
+  .card{background:rgba(20,13,16,.9);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:16px;}
+  .card-title{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;
+    margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid rgba(201,168,76,.15);}
+
+  /* LOBBY */
+  #lobby{justify-content:flex-start;}
+  .lobby-wrap{width:100%;max-width:1000px;}
+  .lobby-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(201,168,76,.2);}
+  .lobby-grid{display:grid;grid-template-columns:1fr 330px;gap:18px;}
+  @media(max-width:680px){.lobby-grid{grid-template-columns:1fr;}}
+
+  .player-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;}
+  .pslot{padding:11px 8px;background:rgba(10,6,8,.5);border:1px dashed rgba(200,180,160,.15);border-radius:6px;
+    text-align:center;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+  .pslot.filled{border:1px solid rgba(201,168,76,.3);background:rgba(20,13,16,.8);}
+  .pslot.is-host{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.07);}
+  .pav{font-size:1.5rem;}.pnm{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;}
+  .badge{font-size:.57rem;padding:2px 6px;border-radius:10px;font-family:'Cinzel',serif;}
+  .badge-host{background:rgba(201,168,76,.2);color:var(--gold);}
+  .badge-me{background:rgba(60,140,60,.3);color:#90ee90;}
+
+  /* ROLE CONFIG */
+  .role-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(10,6,8,.4);border:1px solid rgba(200,180,160,.1);border-radius:5px;margin-bottom:7px;}
+  .role-info-c{display:flex;align-items:center;gap:8px;}
+  .ri{font-size:1.25rem;}.rn{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;}
+  .rd{font-size:.62rem;color:rgba(200,180,160,.5);font-style:italic;margin-top:1px;}
+  .rcc{display:flex;align-items:center;gap:7px;}
+  .cbtn{width:25px;height:25px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:3px;
+    color:var(--gold);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .cbtn:hover{background:rgba(201,168,76,.3);}
+  .cnum{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold-light);min-width:16px;text-align:center;}
+
+  /* GAME */
+  #game{justify-content:flex-start;}
+  .game-wrap{display:grid;grid-template-columns:1fr 265px;gap:13px;width:100%;max-width:1080px;}
+  @media(max-width:720px){.game-wrap{grid-template-columns:1fr;}.gsidebar{display:none;}}
+  .gmain{display:flex;flex-direction:column;gap:11px;}
+  .gsidebar{display:flex;flex-direction:column;gap:11px;}
+
+  /* PHASE */
+  .phase-banner{text-align:center;padding:14px 22px;border-radius:8px;border:1px solid;}
+  .phase-banner.night{background:linear-gradient(135deg,rgba(10,6,20,.95),rgba(20,10,40,.95));border-color:rgba(100,80,180,.4);}
+  .phase-banner.day{background:linear-gradient(135deg,rgba(30,20,10,.95),rgba(50,35,15,.95));border-color:rgba(201,168,76,.4);}
+  .phase-banner.vote{background:linear-gradient(135deg,rgba(30,5,5,.95),rgba(50,10,10,.95));border-color:rgba(139,0,0,.5);}
+  .ph-icon{font-size:2rem;margin-bottom:3px;}
+  .ph-name{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;}
+  .night .ph-name{color:#b0a0ff;}.day .ph-name{color:var(--gold-light);}.vote .ph-name{color:#ff6060;}
+  .ph-desc{font-style:italic;color:rgba(200,180,160,.6);font-size:.88rem;margin-top:3px;}
+
+  /* GAME PLAYERS */
+  .players-game{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
+  .pcard{padding:10px 6px;background:rgba(10,6,8,.7);border:1px solid rgba(200,180,160,.15);border-radius:7px;
+    text-align:center;cursor:pointer;transition:all .3s;position:relative;}
+  .pcard:hover:not(.dead):not(.self){border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.08);transform:translateY(-3px);}
+  .pcard.selected{border-color:var(--blood-light)!important;background:rgba(139,0,0,.2)!important;box-shadow:0 0 20px rgba(139,0,0,.4)!important;}
+  .pcard.self{border-color:rgba(100,180,100,.4);background:rgba(30,60,30,.3);cursor:default;}
+  .pcard.dead{opacity:.35;cursor:default;filter:grayscale(1);}
+  .pcard.dead::after{content:'💀';position:absolute;top:3px;right:5px;font-size:.8rem;}
+  .pc-av{font-size:1.8rem;margin-bottom:2px;}.pc-nm{font-family:'Cinzel',serif;font-size:.66rem;font-weight:600;word-break:break-all;}
+  .pc-role{font-size:.6rem;color:rgba(200,180,160,.45);margin-top:2px;}
+  .vbadge{position:absolute;top:-7px;right:-7px;background:var(--blood);color:white;border-radius:50%;
+    width:20px;height:20px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,100,100,.5);}
+
+  /* MY ROLE */
+  .my-role-card{padding:13px;border-radius:8px;text-align:center;border:1px solid;}
+  .my-role-card.wolf{background:rgba(80,0,0,.4);border-color:rgba(200,0,0,.4);}
+  .my-role-card.villager{background:rgba(20,40,20,.4);border-color:rgba(60,120,60,.4);}
+  .my-role-card.special{background:rgba(20,20,80,.4);border-color:rgba(60,60,200,.4);}
+  .mr-icon{font-size:2.4rem;margin-bottom:4px;}.mr-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold-light);letter-spacing:.1em;}
+  .mr-ability{font-style:italic;font-size:.78rem;color:rgba(200,180,160,.6);margin-top:3px;}
+  .wolf-partners{font-size:.72rem;color:#ff8080;font-style:italic;margin-top:3px;}
+  .lovers-display{font-size:.72rem;color:#ff99cc;font-style:italic;margin-top:3px;}
+
+  /* CHAT */
+  .chat-box{display:flex;flex-direction:column;height:220px;}
+  .chat-msgs{flex:1;overflow-y:auto;padding:8px;background:rgba(0,0,0,.3);border-radius:6px 6px 0 0;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
+  .cmsg{margin-bottom:5px;font-size:.86rem;line-height:1.4;padding:3px 0;border-bottom:1px solid rgba(200,180,160,.05);}
+  .cmsg.sys{color:rgba(201,168,76,.75);font-style:italic;text-align:center;font-size:.76rem;}
+  .cmsg .cs{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;}
+  .cmsg.wolf .cs{color:#ff6060;}.cmsg.norm .cs{color:var(--gold);}
+  .chat-row{display:flex;}
+  .chat-in{flex:1;padding:9px 11px;background:rgba(10,6,8,.8);border:1px solid rgba(201,168,76,.2);border-top:none;
+    border-radius:0 0 0 6px;color:var(--moon);font-family:'Crimson Text',serif;font-size:.92rem;outline:none;}
+  .chat-in:focus{border-color:rgba(201,168,76,.4);}
+  .chat-send{padding:9px 13px;background:rgba(139,0,0,.5);border:1px solid rgba(139,0,0,.4);border-top:none;border-left:none;
+    border-radius:0 0 6px 0;color:var(--gold-light);font-family:'Cinzel',serif;font-size:.72rem;cursor:pointer;transition:all .2s;}
+  .chat-send:hover{background:rgba(139,0,0,.8);}
+
+  /* ACTION */
+  .action-area{padding:13px;background:rgba(10,6,8,.5);border:1px solid rgba(201,168,76,.2);border-radius:8px;text-align:center;}
+  .act-title{font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.15em;color:rgba(201,168,76,.7);text-transform:uppercase;margin-bottom:9px;}
+  .act-desc{font-style:italic;color:rgba(200,180,160,.6);font-size:.86rem;margin-bottom:9px;}
+
+  /* GAME LOG */
+  .game-log{max-height:130px;overflow-y:auto;font-size:.76rem;color:rgba(200,180,160,.6);scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
+  .loge{padding:3px 0;border-bottom:1px solid rgba(200,180,160,.05);font-style:italic;}
+  .loge.death{color:#ff6060;}.loge.good{color:#60c060;}.loge.info{color:var(--gold);}
+
+  /* HOST CTRL */
+  .hctrl{display:flex;flex-direction:column;gap:6px;}
+  .hbtn{padding:8px 13px;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.09em;background:rgba(201,168,76,.1);
+    color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:4px;cursor:pointer;transition:all .2s;text-align:left;text-transform:uppercase;}
+  .hbtn:hover{background:rgba(201,168,76,.2);}
+
+  /* NIGHT OVERLAY */
+  .night-ov{display:none;position:fixed;inset:0;background:rgba(5,3,15,.93);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:24px;}
+  .night-ov.show{display:flex;animation:fadeIn .4s;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .night-ov h2{font-family:'Cinzel',serif;font-size:1.8rem;font-weight:900;color:#b0a0ff;letter-spacing:.2em;margin:14px 0 7px;}
+  .night-ov p{font-style:italic;color:rgba(200,180,160,.6);max-width:400px;line-height:1.6;margin-bottom:14px;}
+  .night-panel{background:rgba(20,13,16,.98);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:20px;width:100%;max-width:420px;}
+  .np-title{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:11px;}
+  .np-targets{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;margin-bottom:11px;}
+  .ntbtn{padding:8px 4px;background:rgba(10,6,8,.6);border:1px solid rgba(200,180,160,.15);border-radius:5px;color:var(--moon);font-size:.86rem;cursor:pointer;text-align:center;transition:all .2s;}
+  .ntbtn:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.08);}
+  .ntbtn.selected{border-color:var(--blood-light);background:rgba(139,0,0,.3);}
+  .nt-av{font-size:1.25rem;display:block;margin-bottom:2px;}.nt-nm{font-size:.64rem;font-family:'Cinzel',serif;}
+
+  /* GAMEOVER */
+  #gameover{gap:16px;}
+  .go-banner{padding:34px;border-radius:12px;max-width:460px;width:100%;text-align:center;}
+  .go-banner.wolves{background:linear-gradient(135deg,rgba(80,0,0,.9),rgba(30,0,0,.95));border:2px solid rgba(200,0,0,.5);box-shadow:0 0 60px rgba(139,0,0,.4);}
+  .go-banner.village{background:linear-gradient(135deg,rgba(20,50,20,.9),rgba(10,30,10,.95));border:2px solid rgba(60,160,60,.5);box-shadow:0 0 60px rgba(60,160,60,.3);}
+  .go-banner.lovers{background:linear-gradient(135deg,rgba(60,10,40,.9),rgba(30,5,20,.95));border:2px solid rgba(200,60,140,.5);box-shadow:0 0 60px rgba(200,60,140,.3);}
+  .go-icon{font-size:4.5rem;margin-bottom:7px;animation:bounceIn .5s;}
+  @keyframes bounceIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  .go-title{font-family:'Cinzel',serif;font-size:2.2rem;font-weight:900;letter-spacing:.1em;margin-bottom:5px;}
+  .wolves .go-title{color:#ff4040;}.village .go-title{color:#60e060;}.lovers .go-title{color:#ff88cc;}
+  .go-sub{font-style:italic;color:rgba(200,180,160,.7);font-size:1rem;}
+  .reveal-list{display:flex;flex-direction:column;gap:6px;max-width:380px;width:100%;}
+  .ri{display:flex;align-items:center;gap:10px;padding:8px 13px;background:rgba(10,6,8,.5);border:1px solid rgba(200,180,160,.15);border-radius:5px;}
+  .ri-icon{font-size:1.2rem;}.ri-name{font-family:'Cinzel',serif;font-size:.84rem;flex:1;}.ri-role{font-size:.75rem;color:rgba(200,180,160,.5);font-style:italic;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,13,16,.97);
+    border:1px solid rgba(201,168,76,.4);border-radius:6px;padding:11px 20px;font-family:'Cinzel',serif;font-size:.84rem;
+    color:var(--gold-light);z-index:9999;transition:transform .4s cubic-bezier(.175,.885,.32,1.275);
+    box-shadow:0 10px 30px rgba(0,0,0,.8);letter-spacing:.05em;text-align:center;max-width:90vw;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  .sep{height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.3),transparent);margin:10px 0;}
+  ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<div id="loadingScreen">
+  <div class="moon-orb" style="width:70px;height:70px;"></div>
+  <div class="spinner"></div>
+  <div class="loading-text">ĐANG KẾT NỐI...</div>
+</div>
+
+<!-- LANDING -->
+<div id="landing" class="screen">
+  <div class="moon-orb"></div>
+  <h1 class="game-title">MA SÓI</h1>
+  <p class="game-subtitle">✦ trò chơi sói đêm trăng ✦</p>
+  <div style="display:flex;flex-direction:column;gap:14px;width:100%;max-width:300px;">
+    <button class="btn-primary" onclick="SS('createRoom')">⚔ Tạo Phòng</button>
+    <button class="btn-secondary" onclick="SS('joinRoom')">🚪 Vào Phòng</button>
+  </div>
+</div>
+
+<!-- CREATE ROOM -->
+<div id="createRoom" class="screen">
+  <div class="panel">
+    <div class="panel-title">⚔ Tạo Phòng Mới</div>
+    <div class="field-group">
+      <label class="field-label">Tên của bạn</label>
+      <input class="field-input" id="createName" placeholder="Nhập tên..." maxlength="16">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn-primary" onclick="createRoom()">Tạo Phòng</button>
+      <button class="btn-ghost" onclick="SS('landing')">← Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN ROOM -->
+<div id="joinRoom" class="screen">
+  <div class="panel">
+    <div class="panel-title">🚪 Vào Phòng</div>
+    <div class="field-group">
+      <label class="field-label">Mã phòng</label>
+      <input class="field-input" id="joinCode" placeholder="XXXXXX" maxlength="6" style="text-transform:uppercase;letter-spacing:.35em;font-size:1.5rem;text-align:center;">
+    </div>
+    <div class="field-group">
+      <label class="field-label">Tên của bạn</label>
+      <input class="field-input" id="joinName" placeholder="Nhập tên..." maxlength="16">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn-primary" onclick="joinRoom()">Vào Phòng</button>
+      <button class="btn-ghost" onclick="SS('landing')">← Quay lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="lobby" class="screen" style="justify-content:flex-start;">
+  <div class="lobby-wrap">
+    <div class="lobby-top">
+      <div>
+        <h2 style="font-family:'Cinzel',serif;color:var(--gold);font-size:1.4rem;">🏠 Phòng Chờ</h2>
+        <p id="lobbyInfo" style="font-size:.8rem;color:rgba(200,180,160,.5);font-style:italic;margin-top:2px;"></p>
+      </div>
+      <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;">
+        <div class="room-code-badge" id="rcBadge" onclick="copyCode()"></div>
+        <button id="startBtn" class="btn-primary" style="display:none;padding:11px 22px;font-size:.85rem;" onclick="hostStart()">▶ Bắt Đầu</button>
+        <button class="btn-ghost" style="padding:9px 16px;font-size:.88rem;" onclick="leaveRoom()">Rời Phòng</button>
+      </div>
+    </div>
+    <div class="lobby-grid">
+      <div class="card">
+        <div class="card-title">👥 Người Chơi (<span id="pCnt">0</span>/12)</div>
+        <div class="player-slot-grid" id="lobbyGrid"></div>
+      </div>
+      <div class="card" id="roleCard">
+        <div class="card-title">⚙ Cấu Hình Vai Trò</div>
+        <div id="roleCfg"></div>
+        <div class="sep"></div>
+        <div id="roleInfo" style="text-align:center;font-size:.76rem;color:rgba(200,180,160,.4);font-style:italic;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen" style="justify-content:flex-start;">
+  <div class="game-wrap">
+    <div class="gmain">
+      <div class="phase-banner night" id="phaseBanner">
+        <div class="ph-icon" id="phIcon">🌑</div>
+        <div class="ph-name" id="phName">ĐANG TẢI</div>
+        <div class="ph-desc" id="phDesc"></div>
+      </div>
+      <div id="nightRes" style="display:none;padding:10px 14px;background:rgba(0,50,0,.3);border:1px solid rgba(60,150,60,.35);border-radius:6px;font-style:italic;color:#80e080;font-size:.86rem;"></div>
+      <div class="card">
+        <div class="card-title" id="playersTitle">👥 Người Chơi</div>
+        <div class="players-game" id="gameGrid"></div>
+      </div>
+      <div class="action-area" id="actArea" style="display:none;">
+        <div class="act-title">BỎ PHIẾU LOẠI TRỪ</div>
+        <div class="act-desc" id="actDesc">Chọn người bạn muốn loại trừ</div>
+        <button class="btn-confirm" id="actBtn" onclick="confirmVote()" disabled>Bỏ Phiếu</button>
+      </div>
+      <div class="card">
+        <div class="card-title">💬 Trò Chuyện</div>
+        <div class="chat-box">
+          <div class="chat-msgs" id="chatMsgs"></div>
+          <div class="chat-row">
+            <input class="chat-in" id="chatIn" placeholder="Nhập tin nhắn..." maxlength="200" onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" onclick="sendChat()">GỬI</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="gsidebar">
+      <div class="card"><div class="card-title">🃏 Vai Trò Của Bạn</div><div id="myRoleDiv"></div></div>
+      <div class="card"><div class="card-title">📜 Nhật Ký</div><div class="game-log" id="gameLog"></div></div>
+      <div class="card" id="hCtrl" style="display:none;">
+        <div class="card-title">👑 Điều Khiển Host</div>
+        <div class="hctrl">
+          <button class="hbtn" onclick="hostSkip()">⏭ Bỏ Qua Pha Hiện Tại</button>
+          <button class="hbtn" onclick="hostToggleReveal()" style="color:#ff9999;border-color:rgba(200,0,0,.3);">👁 Lộ / Ẩn Tất Cả Bài</button>
+          <div style="margin-top:5px;font-size:.7rem;color:rgba(200,180,160,.4);font-style:italic;">Kick người chơi:</div>
+          <div id="kickList" style="display:flex;flex-direction:column;gap:4px;margin-top:3px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAMEOVER -->
+<div id="gameover" class="screen">
+  <div class="go-banner wolves" id="goBanner">
+    <div class="go-icon" id="goIcon">🎉</div>
+    <div class="go-title" id="goTitle">KẾT THÚC</div>
+    <div class="go-sub" id="goSub"></div>
+  </div>
+  <div class="reveal-list" id="revealList"></div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn-primary" onclick="playAgain()">🔄 Chơi Lại</button>
+    <button class="btn-ghost" onclick="fullReset()">🏠 Trang Chủ</button>
+  </div>
+</div>
+
+<!-- NIGHT OVERLAY -->
+<div class="night-ov" id="nightOv">
+  <div style="font-size:3.2rem;">🌑</div>
+  <h2>ĐÊM ĐEN</h2>
+  <p id="novDesc">Màn đêm buông xuống...</p>
+  <div class="night-panel">
+    <div class="np-title" id="novTitle">CHỜ LƯỢT...</div>
+    <div class="np-targets" id="novTargets"></div>
+    <button class="btn-confirm" id="novBtn" onclick="submitNightAction()" disabled>Xác Nhận</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, onValue, push, remove, off }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const FB = { apiKey:"AIzaSyBigBLHt2_Bp6cdKvqG3TOnneBjpI3M1to",
+  authDomain:"werewolf-comfort-zone.firebaseapp.com",
+  databaseURL:"https://werewolf-comfort-zone-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"werewolf-comfort-zone", storageBucket:"werewolf-comfort-zone.firebasestorage.app",
+  messagingSenderId:"1026895135916", appId:"1:1026895135916:web:d8ce30384fb598f82ecb09" };
+
+let db;
+try {
+  db = getDatabase(initializeApp(FB));
+} catch(e) {
+  document.getElementById('loadingScreen').innerHTML =
+    `<div style="text-align:center;padding:30px;">
+      <div style="font-size:3rem;margin-bottom:16px;">⚠️</div>
+      <div style="font-family:'Cinzel',serif;color:#ff6060;font-size:1rem;letter-spacing:.1em;margin-bottom:10px;">Không kết nối được Firebase</div>
+      <div style="color:rgba(200,180,160,.6);font-size:.85rem;max-width:300px;">${e.message}</div>
+    </div>`;
+  throw e;
+}
+
+// ── CONSTANTS ──────────────────────────────────────────────────
+const ROLES = {
+  wolf:    {name:'Ma Sói',         icon:'🐺',team:'wolf',   ability:'Mỗi đêm chọn 1 người để giết',            type:'wolf'},
+  villager:{name:'Dân Làng',       icon:'👨‍🌾',team:'village',ability:'Phán đoán và bỏ phiếu ban ngày',          type:'villager'},
+  seer:    {name:'Tiên Tri',       icon:'🔮',team:'village',ability:'Mỗi đêm xem danh tính 1 người',           type:'special'},
+  doctor:  {name:'Thầy Thuốc',     icon:'💊',team:'village',ability:'Mỗi đêm cứu 1 người (kể cả bản thân)',    type:'special'},
+  hunter:  {name:'Thợ Săn',        icon:'🏹',team:'village',ability:'Khi chết bắn chết 1 người',               type:'special'},
+  witch:   {name:'Phù Thủy',       icon:'🧙‍♀️',team:'village',ability:'Có 1 thuốc cứu và 1 thuốc độc',           type:'special'},
+  idiot:   {name:'Kẻ Ngốc',        icon:'🤡',team:'village',ability:'Bị vote → lộ bài nhưng không chết (1 lần)',type:'special'},
+  cupid:   {name:'Thần Tình Yêu',  icon:'💘',team:'village',ability:'Đêm đầu chọn 2 người yêu nhau',           type:'special'},
+};
+const NIGHT_ORDER = ['cupid','seer','doctor','witch','wolf'];
+const AVATARS = ['🧑','👩','🧔','👱','🧛','🧝','🧜','🧞','🧟','🧙','👸','🤴'];
+const DEF_ROLES = {wolf:2,villager:3,seer:1,doctor:1,hunter:0,witch:0,idiot:0,cupid:0};
+
+// ── LOCAL STATE ────────────────────────────────────────────────
+let L = { code:'',myId:'',myName:'',isHost:false,
+  unsub:null,unsubChat:null,sel:null,
+  npick:null,npickArr:[],curNightRole:null,localReveal:false,_nct:null,_lastPhase:'' };
+let R = {};  // mirror of Firebase room
+
+// ── Firebase refs ──────────────────────────────────────────────
+const rr  = (p='') => ref(db, 'rooms/'+L.code+(p?'/'+p:''));
+const cr  = ()     => ref(db, 'chats/'+L.code);
+const rget= ()     => get(rr()).then(s=>s.exists()?s.val():null);
+
+// ── Subscribe ──────────────────────────────────────────────────
+function subRoom() {
+  if(L.unsub){ try{off(rr());}catch(e){} }
+  L.unsub = onValue(rr(), snap=>{
+    if(!snap.exists()){ toast('Phòng đã bị xóa!'); setTimeout(fullReset,1500); return; }
+    R = snap.val();
+    dispatch();
+  });
+}
+function subChat() {
+  if(L.unsubChat){ try{off(cr());}catch(e){} }
+  L.unsubChat = onValue(cr(), snap=>{
+    const msgs = snap.exists() ? Object.values(snap.val()).sort((a,b)=>a.ts-b.ts) : [];
+    renderChat(msgs);
+  });
+}
+function dispatch() {
+  const ph = R.phase||'lobby';
+  const prevPhase = L._lastPhase||'';
+  if(ph==='lobby')        { SS('lobby');    renderLobby(); }
+  else if(ph==='gameover'){ SS('gameover'); renderGameover(); if(ph!==prevPhase) playSound('gameover'); }
+  else                    { SS('game');     renderGame();
+    if(ph==='night'&&ph!==prevPhase) playSound('night');
+    if(ph==='day'&&ph!==prevPhase)   playSound('day');
+    if(ph==='vote'&&ph!==prevPhase)  playSound('vote');
+  }
+  L._lastPhase=ph;
+  // Fix 1: host auto-checks all night actions on every Firebase update
+  if(L.isHost && ph==='night') { clearTimeout(L._nct); L._nct=setTimeout(hostCheckNight,900); }
+}
+
+// ── SCREEN HELPER ──────────────────────────────────────────────
+window.SS = function(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+};
+
+// ── CREATE / JOIN ──────────────────────────────────────────────
+window.createRoom = async function() {
+  const name = document.getElementById('createName').value.trim();
+  if(!name){ toast('Nhập tên!'); return; }
+  showLoad(); L.code=genCode(); L.myId='p'+Date.now(); L.myName=name; L.isHost=true;
+  await set(rr(), {
+    code:L.code, hostId:L.myId, phase:'lobby', round:0, roles:{...DEF_ROLES},
+    revealAll:false, witchSaved:true, witchPoisoned:true, lovers:[], nightKillTarget:null,
+    nightActed:{}, nightActions:{}, votes:{}, gameLog:[], idiotRevealed:false, winner:null,
+    players:{ [L.myId]:{name,avatar:rndAv(),role:null,alive:true,isHost:true} }
+  });
+  subRoom(); subChat(); hideLoad();
+};
+
+window.joinRoom = async function() {
+  const code = document.getElementById('joinCode').value.trim().toUpperCase();
+  const name = document.getElementById('joinName').value.trim();
+  if(!code||code.length<4){ toast('Nhập mã phòng!'); return; }
+  if(!name){ toast('Nhập tên!'); return; }
+  showLoad(); L.code=code; L.myId='p'+Date.now()+'x'+Math.random().toString(36).substr(2,3);
+  L.myName=name; L.isHost=false;
+  const room = await rget();
+  if(!room){ toast('Không tìm thấy phòng!'); hideLoad(); return; }
+  if(room.phase!=='lobby'){ toast('Game đã bắt đầu rồi!'); hideLoad(); return; }
+  if(Object.keys(room.players||{}).length>=12){ toast('Phòng đã đầy!'); hideLoad(); return; }
+  await update(ref(db,'rooms/'+code+'/players'),{[L.myId]:{name,avatar:rndAv(),role:null,alive:true,isHost:false}});
+  subRoom(); subChat(); hideLoad();
+};
+
+window.leaveRoom = async function() {
+  if(L.isHost){ if(!confirm('Rời phòng sẽ xóa phòng. Tiếp tục?')) return; await remove(rr()); await remove(cr()); }
+  else await remove(ref(db,'rooms/'+L.code+'/players/'+L.myId));
+  fullReset();
+};
+window.fullReset = function() {
+  try{ if(L.unsub) off(rr()); }catch(e){}
+  try{ if(L.unsubChat) off(cr()); }catch(e){}
+  L={code:'',myId:'',myName:'',isHost:false,unsub:null,unsubChat:null,sel:null,npick:null,npickArr:[],curNightRole:null,localReveal:false,_nct:null,_lastPhase:''}; R={};
+  SS('landing');
+};
+window.copyCode = ()=>navigator.clipboard.writeText(L.code).then(()=>toast('Đã copy: '+L.code));
+
+// ── LOBBY ──────────────────────────────────────────────────────
+function renderLobby() {
+  const players=R.players||{};const plist=Object.entries(players);
+  document.getElementById('pCnt').textContent=plist.length;
+  document.getElementById('lobbyInfo').textContent='Mã phòng: '+R.code;
+  document.getElementById('rcBadge').innerHTML=R.code+'<small>Click để copy</small>';
+  const sb=document.getElementById('startBtn');
+  sb.style.display=L.isHost?'block':'none';
+  if(L.isHost) sb.disabled=plist.length<4;
+
+  // Players grid
+  const g=document.getElementById('lobbyGrid'); g.innerHTML='';
+  for(let i=0;i<12;i++){
+    const [pid,p]=plist[i]||[];
+    const d=document.createElement('div');
+    d.className='pslot'+(p?' filled'+(p.isHost?' is-host':''):'');
+    if(p){
+      d.innerHTML=`<span class="pav">${p.avatar}</span><span class="pnm">${E(p.name)}</span>
+        <div style="display:flex;gap:3px;">${p.isHost?'<span class="badge badge-host">HOST</span>':''}${pid===L.myId?'<span class="badge badge-me">BẠN</span>':''}</div>`;
+    } else d.innerHTML=`<span style="font-size:1.3rem;opacity:.13;">+</span><span style="font-size:.72rem;opacity:.28;">Chờ...</span>`;
+    g.appendChild(d);
+  }
+  // Role config
+  const rc=document.getElementById('roleCard');
+  if(L.isHost){ renderRoleCfg(); }
+  else {
+    rc.innerHTML=`<div class="card-title">⚙ Vai Trò</div>
+      <p style="font-style:italic;color:rgba(200,180,160,.5);font-size:.85rem;text-align:center;margin-top:8px;">Host đang cấu hình...</p>
+      <div style="margin-top:14px;" id="roleView"></div>`;
+    const rv=document.getElementById('roleView');
+    if(rv&&R.roles) Object.entries(R.roles).forEach(([k,v])=>{
+      if(!v) return; const r=ROLES[k];
+      rv.innerHTML+=`<div style="display:flex;align-items:center;gap:8px;padding:5px;border-bottom:1px solid rgba(200,180,160,.07);">
+        <span>${r.icon}</span><span style="font-family:'Cinzel',serif;font-size:.76rem;flex:1;">${r.name}</span>
+        <span style="font-family:'Cinzel',serif;color:var(--gold-light);font-weight:700;">×${v}</span></div>`;
+    });
+  }
+}
+function renderRoleCfg() {
+  const el=document.getElementById('roleCfg'); if(!el) return;
+  el.innerHTML='';
+  const roles=R.roles||DEF_ROLES;
+  ['wolf','villager','seer','doctor','hunter','witch','idiot','cupid'].forEach(k=>{
+    const r=ROLES[k],cnt=roles[k]||0,max=k==='wolf'?4:k==='villager'?8:1;
+    const d=document.createElement('div'); d.className='role-row';
+    d.innerHTML=`<div class="role-info-c"><span class="ri">${r.icon}</span>
+      <div><div class="rn">${r.name}</div><div class="rd">${r.ability}</div></div></div>
+      <div class="rcc">
+        <button class="cbtn" onclick="chRole('${k}',-1)">−</button>
+        <span class="cnum">${cnt}</span>
+        <button class="cbtn" onclick="chRole('${k}',1)">+</button>
+      </div>`;
+    el.appendChild(d);
+  });
+  const el2=document.getElementById('roleInfo');
+  if(el2){
+    const tot=Object.values(roles).reduce((a,b)=>a+b,0);
+    const pc=Object.keys(R.players||{}).length,diff=tot-pc;
+    el2.innerHTML=diff===0?`<span style="color:#80e080;">✓ Đủ ${tot} vai trò</span>`:
+      diff>0?`<span style="color:#ffaa40;">Thừa ${diff} vai trò</span>`:`<span style="color:#ff6060;">Thiếu ${Math.abs(diff)} vai trò</span>`;
+  }
+}
+window.chRole = async(k,d)=>{
+  if(!L.isHost) return;
+  const roles={...R.roles},max=k==='wolf'?4:k==='villager'?8:1;
+  roles[k]=Math.max(0,Math.min(max,(roles[k]||0)+d));
+  await update(rr(),{roles});
+};
+
+// ── START GAME ─────────────────────────────────────────────────
+window.hostStart = async function() {
+  if(!L.isHost) return;
+  const pids=Object.keys(R.players||{}), roles=R.roles||{};
+  const tot=Object.values(roles).reduce((a,b)=>a+b,0);
+  if(tot!==pids.length){ toast(`Vai trò (${tot}) ≠ người chơi (${pids.length})!`); return; }
+  if(!roles.wolf){ toast('Cần ít nhất 1 Ma Sói!'); return; }
+  let rl=[]; Object.entries(roles).forEach(([k,c])=>{for(let i=0;i<c;i++) rl.push(k);});
+  shuffle(rl);
+  const pl={...R.players}; pids.forEach((id,i)=>{pl[id]={...pl[id],role:rl[i],alive:true};});
+  await update(rr(),{players:pl,phase:'night',round:1,votes:{},nightActed:{},nightActions:{},lovers:[],
+    nightKillTarget:null,witchSaved:true,witchPoisoned:true,revealAll:false,gameLog:[],winner:null,idiotRevealed:false});
+  await remove(cr());
+  await sysChat('🎮 Game bắt đầu! Đêm 1 đang diễn ra...');
+  setTimeout(hostRunNight,800);
+};
+
+// ── GAME RENDER ────────────────────────────────────────────────
+function renderGame(){
+  renderPhase(); renderPlayers(); renderMyRole(); renderLog(); renderHostCtrl(); renderActArea();
+  maybeNightOv();
+}
+function renderPhase(){
+  const ph=R.phase||'night';
+  document.getElementById('phaseBanner').className='phase-banner '+ph;
+  const cfg={night:{icon:'🌑',name:'ĐÊM '+R.round,desc:'Màn đêm buông xuống, các phe thức dậy...'},
+    day:{icon:'☀️',name:'NGÀY '+R.round,desc:'Mặt trời mọc, làng thảo luận...'},
+    vote:{icon:'⚖️',name:'BỎ PHIẾU',desc:'Cả làng bỏ phiếu trục xuất kẻ tình nghi!'}};
+  const c=cfg[ph]||cfg.night;
+  document.getElementById('phIcon').textContent=c.icon;
+  document.getElementById('phName').textContent=c.name;
+  document.getElementById('phDesc').textContent=c.desc;
+}
+function renderPlayers(){
+  const g=document.getElementById('gameGrid'); g.innerHTML='';
+  const votes=R.votes||{},tally={};
+  Object.values(votes).forEach(v=>{tally[v]=(tally[v]||0)+1;});
+  Object.entries(R.players||{}).forEach(([pid,p])=>{
+    const isMe=pid===L.myId,showRole=L.localReveal||!p.alive||isMe;
+    const d=document.createElement('div');
+    d.className='pcard'+(p.alive?'':' dead')+(isMe?' self':'');
+    if(L.sel===pid&&p.alive&&!isMe) d.classList.add('selected');
+    let rHtml=''; if(showRole&&p.role){const r=ROLES[p.role];rHtml=`<div class="pc-role">${r.icon} ${r.name}</div>`;}
+    const vc=tally[pid];
+    d.innerHTML=`${vc?`<div class="vbadge">${vc}</div>`:''}
+      <div class="pc-av">${p.avatar}</div>
+      <div class="pc-nm">${E(p.name)}${isMe?' <span style="font-size:.52rem;color:#80c080;">(Bạn)</span>':''}</div>${rHtml}`;
+    if(p.alive&&!isMe) d.onclick=()=>{L.sel=L.sel===pid?null:pid;renderPlayers();renderActArea();};
+    g.appendChild(d);
+  });
+}
+function renderMyRole(){
+  const me=(R.players||{})[L.myId]; if(!me?.role) return;
+  const r=ROLES[me.role]; let ex='';
+  if(me.role==='wolf'){
+    const wp=Object.entries(R.players||{}).filter(([id,p])=>p.role==='wolf'&&id!==L.myId&&p.alive).map(([,p])=>p.name).join(', ');
+    if(wp) ex+=`<div class="wolf-partners">🐺 Đồng bọn: ${E(wp)}</div>`;
+  }
+  const lv=R.lovers||[];
+  if(lv.includes(L.myId)){const pid=lv.find(id=>id!==L.myId);const lp=(R.players||{})[pid];if(lp) ex+=`<div class="lovers-display">💕 Người yêu: ${E(lp.name)}</div>`;}
+  document.getElementById('myRoleDiv').innerHTML=`<div class="my-role-card ${r.type}">
+    <div class="mr-icon">${r.icon}</div><div class="mr-name">${r.name}</div><div class="mr-ability">${r.ability}</div>${ex}
+    ${me.role==='witch'?`<div style="font-size:.7rem;margin-top:4px;color:#aaa;">💊 Cứu: ${R.witchSaved?'Còn':'Hết'} | ☠ Độc: ${R.witchPoisoned?'Còn':'Hết'}</div>`:''}
+  </div>`;
+}
+function renderLog(){
+  const el=document.getElementById('gameLog');
+  el.innerHTML=(R.gameLog||[]).slice(-20).map(l=>`<div class="loge ${l.cls||''}">${E(l.text)}</div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function renderHostCtrl(){
+  const el=document.getElementById('hCtrl');
+  if(!L.isHost){el.style.display='none';return;}
+  el.style.display='block';
+  const kl=document.getElementById('kickList'); kl.innerHTML='';
+  Object.entries(R.players||{}).forEach(([pid,p])=>{
+    if(pid===L.myId) return;
+    const b=document.createElement('button'); b.className='btn-danger'; b.textContent='Kick '+p.name;
+    b.onclick=()=>hostKick(pid); kl.appendChild(b);
+  });
+}
+function renderActArea(){
+  const area=document.getElementById('actArea');
+  const me=(R.players||{})[L.myId];
+  if(!me?.alive||R.phase!=='vote'){area.style.display='none';return;}
+  area.style.display='block';
+  const mv=(R.votes||{})[L.myId],mt=mv&&(R.players||{})[mv];
+  document.getElementById('actDesc').textContent=mt?`Đã chọn: ${mt.name}`:'Chọn người muốn loại trừ';
+  document.getElementById('actBtn').disabled=!L.sel||(R.players||{})[L.sel]?.alive!==true;
+}
+
+// ── VOTE ───────────────────────────────────────────────────────
+window.confirmVote = async function(){
+  const me=(R.players||{})[L.myId];
+  if(!me?.alive||R.phase!=='vote'||!L.sel) return;
+  await update(ref(db,'rooms/'+L.code+'/votes'),{[L.myId]:L.sel});
+  toast('Đã bỏ phiếu!'); playSound('action');
+  if(L.isHost) setTimeout(async()=>{
+    const r2=await rget(); const alive=Object.values(r2.players||{}).filter(p=>p.alive).length;
+    if(Object.keys(r2.votes||{}).length>=alive) await hostResolveVote(r2);
+  },500);
+};
+
+// ── CHAT ───────────────────────────────────────────────────────
+window.sendChat = async function(){
+  const inp=document.getElementById('chatIn'),text=inp.value.trim(); if(!text) return;
+  const me=(R.players||{})[L.myId]; if(!me) return;
+  if(!me.alive){toast('Người chết không thể chat!');inp.value='';return;}
+  if(R.phase==='night'&&me.role!=='wolf'){toast('Chỉ Ma Sói mới được chat ban đêm!');inp.value='';return;}
+  await push(cr(),{sender:me.name,text,wolfOnly:me.role==='wolf'&&R.phase==='night',system:false,ts:Date.now(),senderId:L.myId}); playSound('chat');
+  inp.value='';
+};
+async function sysChat(text){ await push(cr(),{system:true,text,ts:Date.now()}); }
+function renderChat(msgs){
+  const me=(R.players||{})[L.myId],isWolf=me?.role==='wolf';
+  const el=document.getElementById('chatMsgs');
+  el.innerHTML=msgs.filter(m=>m.system||!m.wolfOnly||isWolf||L.localReveal).map(m=>{
+    if(m.system) return `<div class="cmsg sys">${E(m.text)}</div>`;
+    return `<div class="cmsg ${m.wolfOnly?'wolf':'norm'}"><span class="cs">${E(m.sender)}</span>: ${E(m.text)}</div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+// ── NIGHT OVERLAY ──────────────────────────────────────────────
+function maybeNightOv(){
+  const me=(R.players||{})[L.myId];
+  const ov=document.getElementById('nightOv');
+  if(!me?.alive||R.phase!=='night'){ov.classList.remove('show');return;}
+  const na=R.nightActed||{},role=me.role;
+  if(!NIGHT_ORDER.includes(role)){ov.classList.remove('show');return;}
+  if(role==='cupid'&&R.round>1){ov.classList.remove('show');return;}
+  if(na[role]==='done'){ov.classList.remove('show');return;}
+  const myIdx=NIGHT_ORDER.indexOf(role);
+  for(let i=0;i<myIdx;i++){
+    const pr=NIGHT_ORDER[i];
+    if(pr==='cupid'&&R.round>1) continue;
+    if(aliveRole(pr,R)&&na[pr]!=='done'){ov.classList.remove('show');return;}
+  }
+  if(L.curNightRole===role&&ov.classList.contains('show')) return;
+  showNightOv(role);
+}
+function showNightOv(role){
+  L.curNightRole=role;
+  const ov=document.getElementById('nightOv'); ov.classList.add('show');
+  const btn=document.getElementById('novBtn'); btn.disabled=true; btn.textContent='Xác Nhận';
+  L.npick=null; L.npickArr=[];
+  const descs={wolf:'Ma Sói thức dậy... chọn người muốn tiêu diệt.',seer:'Tiên Tri thức dậy... chọn người để xem danh tính.',
+    doctor:'Thầy Thuốc thức dậy... chọn người muốn cứu (kể cả bản thân).',witch:'Phù Thủy thức dậy... dùng thuốc hay bỏ qua.',
+    cupid:'Thần Tình Yêu thức dậy... chọn 2 người sẽ yêu nhau!'};
+  document.getElementById('novTitle').textContent=ROLES[role].icon+' '+ROLES[role].name;
+  document.getElementById('novDesc').textContent=descs[role]||'';
+  buildNovTargets(role);
+}
+function buildNovTargets(role){
+  const tDiv=document.getElementById('novTargets'); tDiv.innerHTML='';
+  const pl=R.players||{},alive=Object.entries(pl).filter(([,p])=>p.alive);
+  const others=alive.filter(([id])=>id!==L.myId);
+  const btn=document.getElementById('novBtn');
+  const addBtn=(id,p,label,cb,prefix='')=>{
+    const b=document.createElement('button'); b.className='ntbtn'; b.dataset.pid=id;
+    b.innerHTML=`<span class="nt-av">${prefix||p.avatar}</span><span class="nt-nm">${label||E(p.name)}</span>`;
+    b.onclick=cb; tDiv.appendChild(b); return b;
+  };
+  if(role==='wolf') others.filter(([,p])=>p.role!=='wolf').forEach(([id,p])=>addBtn(id,p,'',()=>{
+    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+  }));
+  else if(role==='seer') others.forEach(([id,p])=>addBtn(id,p,'',()=>{
+    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+  }));
+  else if(role==='doctor') alive.forEach(([id,p])=>addBtn(id,p,'',()=>{
+    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+  }));
+  else if(role==='cupid') alive.forEach(([id,p])=>addBtn(id,p,'',()=>{
+    const b2=tDiv.querySelector(`[data-pid="${id}"]`);
+    if(L.npickArr.includes(id)){L.npickArr=L.npickArr.filter(x=>x!==id);b2.classList.remove('selected');}
+    else if(L.npickArr.length<2){L.npickArr.push(id);b2.classList.add('selected');}
+    btn.disabled=L.npickArr.length!==2;
+  }));
+  else if(role==='witch'){
+    const wt=R.nightKillTarget,wp=wt&&pl[wt];
+    if(R.witchSaved&&wp){
+      const sb=document.createElement('button'); sb.className='ntbtn'; sb.dataset.pid='__save';
+      sb.innerHTML=`<span class="nt-av">💊</span><span class="nt-nm">Cứu ${E(wp.name)}</span>`;
+      sb.onclick=()=>{L.npick='__save';btn.disabled=false;tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));sb.classList.add('selected');};
+      tDiv.appendChild(sb);
+    }
+    if(R.witchPoisoned) others.filter(([id])=>id!==wt).forEach(([id,p])=>addBtn(id,p,'',()=>{
+      L.npick='__poison__'+id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+      tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+    },'☠'));
+    const skip=document.createElement('button'); skip.className='ntbtn'; skip.dataset.pid='__skip';
+    skip.innerHTML=`<span class="nt-av">💤</span><span class="nt-nm">Bỏ Qua</span>`;
+    skip.onclick=()=>{L.npick='__skip';btn.disabled=false;tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));skip.classList.add('selected');};
+    tDiv.appendChild(skip);
+  }
+}
+window.submitNightAction = async function(){
+  const role=L.curNightRole; if(!role) return;
+  const upd={};
+  if(role==='wolf'&&L.npick) upd['nightKillTarget']=L.npick;
+  else if(role==='seer'&&L.npick){const t=(R.players||{})[L.npick];if(t){const tr=ROLES[t.role];toast(`🔮 ${t.name} là: ${tr.icon} ${tr.name}!`,5000);}}
+  else if(role==='doctor'&&L.npick) upd['nightActions/doctorSave']=L.npick;
+  else if(role==='witch'){
+    if(L.npick==='__save'){upd['nightActions/witchSave']=R.nightKillTarget;upd['witchSaved']=false;}
+    else if(L.npick?.startsWith('__poison__')){upd['nightActions/witchPoison']=L.npick.replace('__poison__','');upd['witchPoisoned']=false;}
+  }
+  else if(role==='cupid'&&L.npickArr.length===2){
+    upd['lovers']=L.npickArr;
+    const n1=(R.players||{})[L.npickArr[0]]?.name,n2=(R.players||{})[L.npickArr[1]]?.name;
+    toast(`💘 ${n1} và ${n2} đã yêu nhau!`);
+  }
+  upd['nightActed/'+role]='done';
+  if(Object.keys(upd).length) await update(rr(),upd);
+  playSound('action'); document.getElementById('nightOv').classList.remove('show');
+  L.curNightRole=null;
+  if(L.isHost) setTimeout(hostCheckNight,600);
+};
+
+// ── HOST NIGHT ENGINE ──────────────────────────────────────────
+async function hostRunNight(){
+  if(!L.isHost) return;
+  await update(rr(),{nightActed:{},nightActions:{},nightKillTarget:null,phase:'night'});
+  await sysChat(`🌑 Đêm ${R.round||1} bắt đầu...`);
+}
+async function hostCheckNight(){
+  if(!L.isHost) return;
+  const r2=await rget(); const na=r2.nightActed||{};
+  for(const role of NIGHT_ORDER){
+    if(role==='cupid'&&r2.round>1) continue;
+    if(aliveRole(role,r2)&&na[role]!=='done') return;
+  }
+  await hostResolveNight(r2);
+}
+async function hostResolveNight(r2){
+  if(!L.isHost) return;
+  const pl={...r2.players},na=r2.nightActions||{},chats=[],log=[...(r2.gameLog||[])];
+  let deaths=[];
+  if(r2.nightKillTarget){
+    if(na.doctorSave===r2.nightKillTarget||na.witchSave===r2.nightKillTarget){chats.push({system:true,text:'💊 Ai đó đã được cứu sống đêm nay!',ts:Date.now()});log.push({text:'💊 Nạn nhân được cứu!',cls:'good'});}
+    else deaths.push({pid:r2.nightKillTarget,reason:'wolf'});
+  }
+  if(na.witchPoison) deaths.push({pid:na.witchPoison,reason:'poison'});
+  for(const d of deaths) await applyDeath(pl,d.pid,d.reason,chats,log,r2);
+  const newRound=(r2.round||1)+1;
+  await update(rr(),{players:pl,phase:'day',round:newRound,nightActed:{},nightActions:{},nightKillTarget:null,gameLog:log,votes:{}});
+  for(const m of chats) await push(cr(),m);
+  await sysChat(`☀️ Ngày ${newRound-1} — Làng thức dậy và thảo luận!`);
+  const r3=await rget(); if(!await hostCheckWin(r3)) setTimeout(()=>hostStartVote(),30000);
+}
+async function applyDeath(pl,pid,reason,chats,log,r2,chain=true){
+  const p=pl[pid]; if(!p?.alive) return;
+  if(reason==='vote'&&p.role==='idiot'&&!r2.idiotRevealed){
+    await update(rr(),{idiotRevealed:true});
+    chats.push({system:true,text:`🤡 ${p.name} là Kẻ Ngốc! Lộ bài nhưng không chết.`,ts:Date.now()});
+    log.push({text:`🤡 ${p.name} (Kẻ Ngốc) không chết!`,cls:'info'}); return;
+  }
+  p.alive=false;
+  const r=ROLES[p.role],reasons={wolf:'bị Ma Sói tấn công',poison:'bị đầu độc',vote:'bị làng trục xuất',lover:'vì người yêu chết',hunter:'bị Thợ Săn bắn'};
+  const msg=`💀 ${p.name} (${r.icon} ${r.name}) chết — ${reasons[reason]||''}`;
+  chats.push({system:true,text:msg,ts:Date.now()+Math.random()*100}); if(L.myId===pid||true) setTimeout(()=>playSound('death'),100);
+  log.push({text:msg,cls:'death'});
+  if(chain&&(r2.lovers||[]).includes(pid)){
+    const partner=(r2.lovers||[]).find(id=>id!==pid);
+    if(partner&&pl[partner]?.alive) await applyDeath(pl,partner,'lover',chats,log,r2,false);
+  }
+  if(p.role==='hunter'){
+    const tgts=Object.entries(pl).filter(([id,pp])=>pp.alive&&id!==pid);
+    if(tgts.length){const[tid]=tgts[Math.floor(Math.random()*tgts.length)];await applyDeath(pl,tid,'hunter',chats,log,r2,true);}
+  }
+}
+async function hostStartVote(){
+  if(!L.isHost) return;
+  const r2=await rget(); if(r2.phase!=='day') return;
+  await update(rr(),{phase:'vote',votes:{}});
+  await sysChat('⚖️ Bỏ phiếu bắt đầu! Hãy chọn kẻ tình nghi.');
+  setTimeout(()=>hostResolveVote(),30000);
+}
+async function hostResolveVote(r2=null){
+  if(!L.isHost) return;
+  if(!r2){const snap=await rget();r2=snap;}
+  if(r2.phase!=='vote') return;
+  const votes=r2.votes||{},tally={};
+  Object.values(votes).forEach(v=>{tally[v]=(tally[v]||0)+1;});
+  let maxV=0,victim=null;
+  Object.entries(tally).forEach(([pid,cnt])=>{if(cnt>maxV){maxV=cnt;victim=pid;}});
+  const pl={...r2.players},chats=[],log=[...(r2.gameLog||[])];
+  if(victim&&pl[victim]?.alive) await applyDeath(pl,victim,'vote',chats,log,r2);
+  else{chats.push({system:true,text:'🤷 Hòa phiếu, không ai bị loại.',ts:Date.now()});log.push({text:'🤷 Hòa phiếu.',cls:'info'});}
+  await update(rr(),{players:pl,votes:{},phase:'night',round:(r2.round||1)+1,gameLog:log});
+  for(const m of chats) await push(cr(),m);
+  const r3=await rget(); if(!await hostCheckWin(r3)) setTimeout(()=>hostRunNight(),1200);
+}
+async function hostCheckWin(r2){
+  if(!L.isHost) return false;
+  const alive=Object.values(r2.players||{}).filter(p=>p.alive);
+  const wolves=alive.filter(p=>p.role==='wolf').length,others=alive.filter(p=>p.role!=='wolf').length;
+  const lv=(r2.lovers||[]).filter(id=>(r2.players||{})[id]?.alive);
+  if(lv.length===2&&alive.length===2){await endGame('lovers');return true;}
+  if(wolves===0){await endGame('village');return true;}
+  if(wolves>=others){await endGame('wolf');return true;}
+  return false;
+}
+async function endGame(winner){
+  await update(rr(),{phase:'gameover',winner});
+  const msgs={wolf:'🐺 Ma Sói chiến thắng!',village:'🌅 Dân làng chiến thắng!',lovers:'💕 Tình yêu chiến thắng!'};
+  await sysChat(msgs[winner]||'Game kết thúc!');
+}
+
+// ── GAMEOVER ───────────────────────────────────────────────────
+function renderGameover(){
+  L.localReveal=true; // gameover = reveal all for everyone
+  const w=R.winner||'village',bn=document.getElementById('goBanner');
+  bn.className='go-banner '+{wolf:'wolves',village:'village',lovers:'lovers'}[w];
+  const cfg={wolf:{icon:'🐺',title:'MA SÓI THẮNG!',sub:'Bóng tối nuốt chửng làng...'},
+    village:{icon:'🌅',title:'DÂN LÀNG THẮNG!',sub:'Ánh sáng đẩy lùi bóng tối! Làng bình yên!'},
+    lovers:{icon:'💕',title:'TÌNH YÊU THẮNG!',sub:'Chỉ còn hai trái tim yêu nhau...'}};
+  const c=cfg[w];
+  document.getElementById('goIcon').textContent=c.icon;
+  document.getElementById('goTitle').textContent=c.title;
+  document.getElementById('goSub').textContent=c.sub;
+  const rl=document.getElementById('revealList'); rl.innerHTML='';
+  Object.values(R.players||{}).forEach(p=>{
+    const r=p.role?ROLES[p.role]:{icon:'❓',name:'Ẩn'};
+    rl.innerHTML+=`<div class="ri"><span class="ri-icon">${r.icon}</span><span class="ri-name">${E(p.name)} ${p.alive?'':'💀'}</span><span class="ri-role">${r.name}</span></div>`;
+  });
+}
+window.playAgain = async function(){
+  if(L.isHost){
+    const pl={};
+    Object.entries(R.players||{}).forEach(([id,p])=>{pl[id]={...p,role:null,alive:true};});
+    await update(rr(),{players:pl,phase:'lobby',round:0,revealAll:false,votes:{},nightActed:{},nightActions:{},
+      lovers:[],nightKillTarget:null,witchSaved:true,witchPoisoned:true,gameLog:[],winner:null,idiotRevealed:false});
+    await remove(cr());
+  } else toast('Chờ host bắt đầu game mới!');
+};
+
+// ── HOST CONTROLS ──────────────────────────────────────────────
+window.hostSkip = async function(){
+  if(!L.isHost) return;
+  const r2=await rget();
+  if(r2.phase==='night'){
+    const na={...(r2.nightActed||{})};
+    NIGHT_ORDER.forEach(role=>{if(aliveRole(role,r2)&&na[role]!=='done') na[role]='done';});
+    await update(rr(),{nightActed:na});
+    await hostResolveNight({...r2,nightActed:na});
+  } else if(r2.phase==='day') await hostStartVote();
+  else if(r2.phase==='vote') await hostResolveVote(r2);
+};
+window.hostToggleReveal = function(){
+  if(!L.isHost) return;
+  L.localReveal=!L.localReveal;
+  toast(L.localReveal?'👁 Bạn (host) đang xem bài — người khác không thấy':'🙈 Đã ẩn bài');
+  renderPlayers();
+};
+window.hostKick = async function(pid){
+  if(!L.isHost) return;
+  const name=(R.players||{})[pid]?.name;
+  if(!confirm(`Kick ${name}?`)) return;
+  await remove(ref(db,'rooms/'+L.code+'/players/'+pid));
+  toast('Đã kick '+name);
+};
+
+// ── UTILS ──────────────────────────────────────────────────────
+function aliveRole(role,r2){ return Object.values(r2.players||{}).some(p=>p.role===role&&p.alive); }
+function genCode(){ return Math.random().toString(36).substr(2,6).toUpperCase(); }
+function rndAv(){ return AVATARS[Math.floor(Math.random()*AVATARS.length)]; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a; }
+function E(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showLoad(){ document.getElementById('loadingScreen').classList.remove('hide'); }
+function hideLoad(){ document.getElementById('loadingScreen').classList.add('hide'); }
+
+window.toast = function(msg,duration=3000){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._tid); t._tid=setTimeout(()=>t.classList.remove('show'),duration);
+};
+
+
+// ── SOUND EFFECTS (Web Audio API — no external files) ─────────
+const AudioCtx = window.AudioContext||window.webkitAudioContext;
+let _actx=null;
+function getACtx(){ if(!_actx) _actx=new AudioCtx(); return _actx; }
+
+function playSound(type){
+  try{
+    const ctx=getACtx(); const t=ctx.currentTime;
+    const cfg={
+      night:   ()=>{ playTone(ctx,180,.8,t,.01,.4,'sine'); playTone(ctx,120,.5,t+.3,.01,.6,'sine'); playTone(ctx,90,.3,t+.7,.01,.8,'sine'); },
+      day:     ()=>{ playTone(ctx,523,.5,t,.01,.2,'sine'); playTone(ctx,659,.4,t+.15,.01,.2,'sine'); playTone(ctx,784,.5,t+.3,.01,.3,'sine'); },
+      vote:    ()=>{ playTone(ctx,220,.4,t,.01,.15,'sawtooth'); playTone(ctx,220,.4,t+.2,.01,.15,'sawtooth'); },
+      death:   ()=>{ playNoise(ctx,.4,t,.01,.6); playTone(ctx,110,.3,t,.01,.5,'sawtooth'); },
+      gameover:()=>{ [261,220,196,174].forEach((f,i)=>playTone(ctx,f,.4,t+i*.25,.01,.2,'sine')); },
+      chat:    ()=>{ playTone(ctx,880,.15,t,.005,.08,'sine'); },
+      action:  ()=>{ playTone(ctx,440,.2,t,.005,.1,'square'); },
+    };
+    cfg[type]?.();
+  }catch(e){}
+}
+function playTone(ctx,freq,vol,start,attack,decay,type){
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.type=type; o.frequency.value=freq;
+  g.gain.setValueAtTime(0,start);
+  g.gain.linearRampToValueAtTime(vol,start+attack);
+  g.gain.exponentialRampToValueAtTime(0.001,start+attack+decay);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(start); o.stop(start+attack+decay+.05);
+}
+function playNoise(ctx,vol,start,attack,decay){
+  const buf=ctx.createBuffer(1,ctx.sampleRate*.5,ctx.sampleRate);
+  const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  const s=ctx.createBufferSource(),g=ctx.createGain();
+  const f=ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=200;
+  s.buffer=buf; s.connect(f); f.connect(g); g.connect(ctx.destination);
+  g.gain.setValueAtTime(0,start);
+  g.gain.linearRampToValueAtTime(vol,start+attack);
+  g.gain.exponentialRampToValueAtTime(0.001,start+attack+decay);
+  s.start(start); s.stop(start+attack+decay+.1);
+}
+// Unlock AudioContext on first interaction
+document.addEventListener('click',()=>{ try{getACtx().resume();}catch(e){} },{once:true});
+
+// Stars
+(()=>{
+  const c=document.getElementById('stars');
+  for(let i=0;i<110;i++){
+    const s=document.createElement('div');s.className='star';const sz=Math.random()*2.5+.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*4}s;--a:${.3+Math.random()*.7};--delay:${Math.random()*5}s`;
+    c.appendChild(s);
+  }
+})();
+
+// URL param + show landing after Firebase ready
+(()=>{
+  const p=new URLSearchParams(window.location.search),code=p.get('room');
+  if(code) document.getElementById('joinCode').value=code.toUpperCase();
+  setTimeout(()=>{
+    hideLoad();
+    if(code) SS('joinRoom'); else SS('landing');
+  }, 500);
+})();
+</script>
+</body>
+</html>
