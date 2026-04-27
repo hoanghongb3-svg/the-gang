@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐺 Ma Sói Online</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --blood:#8B0000;--blood-light:#c0392b;--gold:#c9a84c;
-    --gold-light:#f0d080;--moon:#e8dcc8;--dark:#0a0608;--dark2:#140d10;--dark3:#1e1218;
+    --gold-light:#f0d080;--moon:#ede0cc;--dark:#0d0a0e;--dark2:#161020;--dark3:#1e1630;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Crimson Text',serif;background:var(--dark);color:var(--moon);min-height:100vh;overflow-x:hidden;}
+  body{font-family:'Inter',sans-serif;font-size:15px;line-height:1.55;background:var(--dark);color:var(--moon);min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(139,0,0,.15) 0%,transparent 70%),
                radial-gradient(ellipse 60% 40% at 20% 80%,rgba(50,20,60,.3) 0%,transparent 60%);}
@@ -53,13 +53,13 @@
   .btn-secondary:hover{background:rgba(201,168,76,.1);border-color:var(--gold);transform:translateY(-2px);}
   .btn-ghost{padding:11px 28px;font-family:'Crimson Text',serif;font-size:1rem;background:transparent;
     color:rgba(200,180,160,.6);border:1px solid rgba(200,180,160,.2);border-radius:4px;cursor:pointer;transition:all .3s;}
-  .btn-ghost:hover{color:var(--moon);border-color:rgba(200,180,160,.5);background:rgba(200,180,160,.05);}
+  .btn-ghost:hover{color:var(--moon);border-color:rgba(210,190,170,.65);background:rgba(200,180,160,.05);}
   .btn-confirm{padding:11px 30px;font-family:'Cinzel',serif;font-size:.92rem;font-weight:600;letter-spacing:.1em;
     background:linear-gradient(135deg,#8B0000,#c0392b);color:var(--gold-light);border:1px solid rgba(201,168,76,.4);
     border-radius:4px;cursor:pointer;transition:all .3s;text-transform:uppercase;}
   .btn-confirm:hover:not(:disabled){background:linear-gradient(135deg,#a00000,#e74c3c);box-shadow:0 0 20px rgba(139,0,0,.5);}
   .btn-confirm:disabled{opacity:.4;cursor:not-allowed;}
-  .btn-danger{padding:7px 14px;font-family:'Cinzel',serif;font-size:.72rem;background:rgba(139,0,0,.3);
+  .btn-danger{padding:7px 14px;font-family:'Cinzel',serif;font-size:.82rem;background:rgba(139,0,0,.3);
     color:#ff6b6b;border:1px solid rgba(139,0,0,.5);border-radius:4px;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.08em;}
   .btn-danger:hover{background:rgba(139,0,0,.5);}
 
@@ -84,7 +84,7 @@
   .room-code-badge small{display:block;font-size:.42rem;color:rgba(200,180,160,.4);letter-spacing:.08em;margin-top:2px;}
 
   /* CARD */
-  .card{background:rgba(20,13,16,.9);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:16px;}
+  .card{background:rgba(22,16,28,.92);border:1px solid rgba(201,168,76,.22);border-radius:8px;padding:16px;}
   .card-title{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;
     margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid rgba(201,168,76,.15);}
 
@@ -100,7 +100,7 @@
     text-align:center;min-height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
   .pslot.filled{border:1px solid rgba(201,168,76,.3);background:rgba(20,13,16,.8);}
   .pslot.is-host{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.07);}
-  .pav{font-size:1.5rem;}.pnm{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;}
+  .pav{font-size:1.5rem;}.pnm{font-family:'Cinzel',serif;font-size:.82rem;font-weight:600;}
   .badge{font-size:.57rem;padding:2px 6px;border-radius:10px;font-family:'Cinzel',serif;}
   .badge-host{background:rgba(201,168,76,.2);color:var(--gold);}
   .badge-me{background:rgba(60,140,60,.3);color:#90ee90;}
@@ -109,7 +109,7 @@
   .role-row{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(10,6,8,.4);border:1px solid rgba(200,180,160,.1);border-radius:5px;margin-bottom:7px;}
   .role-info-c{display:flex;align-items:center;gap:8px;}
   .ri{font-size:1.25rem;}.rn{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;}
-  .rd{font-size:.62rem;color:rgba(200,180,160,.5);font-style:italic;margin-top:1px;}
+  .rd{font-size:.78rem;color:rgba(210,190,170,.65);font-style:italic;margin-top:1px;}
   .rcc{display:flex;align-items:center;gap:7px;}
   .cbtn{width:25px;height:25px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);border-radius:3px;
     color:var(--gold);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
@@ -131,7 +131,7 @@
   .ph-icon{font-size:2rem;margin-bottom:3px;}
   .ph-name{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;}
   .night .ph-name{color:#b0a0ff;}.day .ph-name{color:var(--gold-light);}.vote .ph-name{color:#ff6060;}
-  .ph-desc{font-style:italic;color:rgba(200,180,160,.6);font-size:.88rem;margin-top:3px;}
+  .ph-desc{color:rgba(220,200,180,.7);font-size:.9rem;margin-top:3px;}
 
   /* GAME PLAYERS */
   .players-game{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
@@ -142,10 +142,10 @@
   .pcard.self{border-color:rgba(100,180,100,.4);background:rgba(30,60,30,.3);cursor:default;}
   .pcard.dead{opacity:.35;cursor:default;filter:grayscale(1);}
   .pcard.dead::after{content:'💀';position:absolute;top:3px;right:5px;font-size:.8rem;}
-  .pc-av{font-size:1.8rem;margin-bottom:2px;}.pc-nm{font-family:'Cinzel',serif;font-size:.66rem;font-weight:600;word-break:break-all;}
-  .pc-role{font-size:.6rem;color:rgba(200,180,160,.45);margin-top:2px;}
+  .pc-av{font-size:1.8rem;margin-bottom:2px;}.pc-nm{font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;word-break:break-all;}
+  .pc-role{font-size:.78rem;color:rgba(200,180,160,.45);margin-top:2px;}
   .vbadge{position:absolute;top:-7px;right:-7px;background:var(--blood);color:white;border-radius:50%;
-    width:20px;height:20px;font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;
+    width:20px;height:20px;font-family:'Cinzel',serif;font-size:.78rem;font-weight:700;
     display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,100,100,.5);}
 
   /* MY ROLE */
@@ -155,22 +155,22 @@
   .my-role-card.special{background:rgba(20,20,80,.4);border-color:rgba(60,60,200,.4);}
   .mr-icon{font-size:2.4rem;margin-bottom:4px;}.mr-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;color:var(--gold-light);letter-spacing:.1em;}
   .mr-ability{font-style:italic;font-size:.78rem;color:rgba(200,180,160,.6);margin-top:3px;}
-  .wolf-partners{font-size:.72rem;color:#ff8080;font-style:italic;margin-top:3px;}
-  .lovers-display{font-size:.72rem;color:#ff99cc;font-style:italic;margin-top:3px;}
+  .wolf-partners{font-size:.82rem;color:#ff8080;font-style:italic;margin-top:3px;}
+  .lovers-display{font-size:.82rem;color:#ff99cc;font-style:italic;margin-top:3px;}
 
   /* CHAT */
   .chat-box{display:flex;flex-direction:column;height:220px;}
   .chat-msgs{flex:1;overflow-y:auto;padding:8px;background:rgba(0,0,0,.3);border-radius:6px 6px 0 0;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
-  .cmsg{margin-bottom:5px;font-size:.86rem;line-height:1.4;padding:3px 0;border-bottom:1px solid rgba(200,180,160,.05);}
-  .cmsg.sys{color:rgba(201,168,76,.75);font-style:italic;text-align:center;font-size:.76rem;}
-  .cmsg .cs{font-family:'Cinzel',serif;font-size:.7rem;font-weight:600;}
+  .cmsg{margin-bottom:6px;font-size:.9rem;line-height:1.55;padding:3px 0;border-bottom:1px solid rgba(200,180,160,.05);}
+  .cmsg.sys{color:rgba(220,190,100,.9);font-style:italic;text-align:center;font-size:.82rem;}
+  .cmsg .cs{font-family:'Cinzel',serif;font-size:.82rem;font-weight:600;}
   .cmsg.wolf .cs{color:#ff6060;}.cmsg.norm .cs{color:var(--gold);}
   .chat-row{display:flex;}
   .chat-in{flex:1;padding:9px 11px;background:rgba(10,6,8,.8);border:1px solid rgba(201,168,76,.2);border-top:none;
     border-radius:0 0 0 6px;color:var(--moon);font-family:'Crimson Text',serif;font-size:.92rem;outline:none;}
   .chat-in:focus{border-color:rgba(201,168,76,.4);}
   .chat-send{padding:9px 13px;background:rgba(139,0,0,.5);border:1px solid rgba(139,0,0,.4);border-top:none;border-left:none;
-    border-radius:0 0 6px 0;color:var(--gold-light);font-family:'Cinzel',serif;font-size:.72rem;cursor:pointer;transition:all .2s;}
+    border-radius:0 0 6px 0;color:var(--gold-light);font-family:'Cinzel',serif;font-size:.82rem;cursor:pointer;transition:all .2s;}
   .chat-send:hover{background:rgba(139,0,0,.8);}
 
   /* ACTION */
@@ -179,13 +179,13 @@
   .act-desc{font-style:italic;color:rgba(200,180,160,.6);font-size:.86rem;margin-bottom:9px;}
 
   /* GAME LOG */
-  .game-log{max-height:130px;overflow-y:auto;font-size:.76rem;color:rgba(200,180,160,.6);scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
+  .game-log{max-height:130px;overflow-y:auto;font-size:.82rem;color:rgba(200,180,160,.6);scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent;}
   .loge{padding:3px 0;border-bottom:1px solid rgba(200,180,160,.05);font-style:italic;}
   .loge.death{color:#ff6060;}.loge.good{color:#60c060;}.loge.info{color:var(--gold);}
 
   /* HOST CTRL */
   .hctrl{display:flex;flex-direction:column;gap:6px;}
-  .hbtn{padding:8px 13px;font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.09em;background:rgba(201,168,76,.1);
+  .hbtn{padding:8px 13px;font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.09em;background:rgba(201,168,76,.1);
     color:var(--gold);border:1px solid rgba(201,168,76,.3);border-radius:4px;cursor:pointer;transition:all .2s;text-align:left;text-transform:uppercase;}
   .hbtn:hover{background:rgba(201,168,76,.2);}
 
@@ -201,7 +201,7 @@
   .ntbtn{padding:8px 4px;background:rgba(10,6,8,.6);border:1px solid rgba(200,180,160,.15);border-radius:5px;color:var(--moon);font-size:.86rem;cursor:pointer;text-align:center;transition:all .2s;}
   .ntbtn:hover{border-color:rgba(201,168,76,.4);background:rgba(201,168,76,.08);}
   .ntbtn.selected{border-color:var(--blood-light);background:rgba(139,0,0,.3);}
-  .nt-av{font-size:1.25rem;display:block;margin-bottom:2px;}.nt-nm{font-size:.64rem;font-family:'Cinzel',serif;}
+  .nt-av{font-size:1.25rem;display:block;margin-bottom:2px;}.nt-nm{font-size:.78rem;font-family:'Cinzel',serif;}
 
   /* GAMEOVER */
   #gameover{gap:16px;}
@@ -216,7 +216,7 @@
   .go-sub{font-style:italic;color:rgba(200,180,160,.7);font-size:1rem;}
   .reveal-list{display:flex;flex-direction:column;gap:6px;max-width:380px;width:100%;}
   .ri{display:flex;align-items:center;gap:10px;padding:8px 13px;background:rgba(10,6,8,.5);border:1px solid rgba(200,180,160,.15);border-radius:5px;}
-  .ri-icon{font-size:1.2rem;}.ri-name{font-family:'Cinzel',serif;font-size:.84rem;flex:1;}.ri-role{font-size:.75rem;color:rgba(200,180,160,.5);font-style:italic;}
+  .ri-icon{font-size:1.2rem;}.ri-name{font-family:'Cinzel',serif;font-size:.84rem;flex:1;}.ri-role{font-size:.75rem;color:rgba(210,190,170,.65);font-style:italic;}
 
   /* TOAST */
   .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(100px);background:rgba(20,13,16,.97);
@@ -288,7 +288,7 @@
     <div class="lobby-top">
       <div>
         <h2 style="font-family:'Cinzel',serif;color:var(--gold);font-size:1.4rem;">🏠 Phòng Chờ</h2>
-        <p id="lobbyInfo" style="font-size:.8rem;color:rgba(200,180,160,.5);font-style:italic;margin-top:2px;"></p>
+        <p id="lobbyInfo" style="font-size:.8rem;color:rgba(210,190,170,.65);font-style:italic;margin-top:2px;"></p>
       </div>
       <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap;">
         <div class="room-code-badge" id="rcBadge" onclick="copyCode()"></div>
@@ -348,8 +348,7 @@
         <div class="card-title">👑 Điều Khiển Host</div>
         <div class="hctrl">
           <button class="hbtn" onclick="hostSkip()">⏭ Bỏ Qua Pha Hiện Tại</button>
-          <button class="hbtn" onclick="hostToggleReveal()" style="color:#ff9999;border-color:rgba(200,0,0,.3);">👁 Lộ / Ẩn Tất Cả Bài</button>
-          <div style="margin-top:5px;font-size:.7rem;color:rgba(200,180,160,.4);font-style:italic;">Kick người chơi:</div>
+          <div style="margin-top:5px;font-size:.82rem;color:rgba(200,180,160,.4);font-style:italic;">Kick người chơi:</div>
           <div id="kickList" style="display:flex;flex-direction:column;gap:4px;margin-top:3px;"></div>
         </div>
       </div>
@@ -411,18 +410,22 @@ try {
 
 // ── CONSTANTS ──────────────────────────────────────────────────
 const ROLES = {
-  wolf:    {name:'Ma Sói',         icon:'🐺',team:'wolf',   ability:'Mỗi đêm chọn 1 người để giết',            type:'wolf'},
-  villager:{name:'Dân Làng',       icon:'👨‍🌾',team:'village',ability:'Phán đoán và bỏ phiếu ban ngày',          type:'villager'},
-  seer:    {name:'Tiên Tri',       icon:'🔮',team:'village',ability:'Mỗi đêm xem danh tính 1 người',           type:'special'},
-  doctor:  {name:'Thầy Thuốc',     icon:'💊',team:'village',ability:'Mỗi đêm cứu 1 người (kể cả bản thân)',    type:'special'},
-  hunter:  {name:'Thợ Săn',        icon:'🏹',team:'village',ability:'Khi chết bắn chết 1 người',               type:'special'},
-  witch:   {name:'Phù Thủy',       icon:'🧙‍♀️',team:'village',ability:'Có 1 thuốc cứu và 1 thuốc độc',           type:'special'},
-  idiot:   {name:'Kẻ Ngốc',        icon:'🤡',team:'village',ability:'Bị vote → lộ bài nhưng không chết (1 lần)',type:'special'},
-  cupid:   {name:'Thần Tình Yêu',  icon:'💘',team:'village',ability:'Đêm đầu chọn 2 người yêu nhau',           type:'special'},
+  wolf:       {name:'Ma Sói',         icon:'🐺',team:'wolf',   ability:'Mỗi đêm chọn 1 người để giết',                        type:'wolf'},
+  wolfcub:    {name:'Sói Con',        icon:'🐾',team:'wolf',   ability:'Khi chết, làng mất lượt vote hôm đó',                 type:'wolf'},
+  traitor:    {name:'Bán Sói',        icon:'🦹',team:'wolf',   ability:'Trông như dân làng, chỉ gia nhập phe sói khi sói chết hết', type:'wolf'},
+  villager:   {name:'Dân Làng',       icon:'👨‍🌾',team:'village',ability:'Phán đoán và bỏ phiếu ban ngày',                      type:'villager'},
+  seer:       {name:'Tiên Tri',       icon:'🔮',team:'village',ability:'Mỗi đêm xem danh tính 1 người',                       type:'special'},
+  doctor:     {name:'Thầy Thuốc',     icon:'💊',team:'village',ability:'Mỗi đêm cứu 1 người (kể cả bản thân)',                type:'special'},
+  guard:      {name:'Bảo Vệ',        icon:'🛡️',team:'village',ability:'Mỗi đêm bảo vệ 1 người (không được bảo vệ cùng người 2 đêm liên tiếp)', type:'special'},
+  hunter:     {name:'Thợ Săn',        icon:'🏹',team:'village',ability:'Khi chết bắn chết 1 người',                           type:'special'},
+  witch:      {name:'Phù Thủy',       icon:'🧙‍♀️',team:'village',ability:'Có 1 thuốc cứu và 1 thuốc độc',                       type:'special'},
+  idiot:      {name:'Kẻ Ngốc',        icon:'🤡',team:'village',ability:'Bị vote → lộ bài nhưng không chết (1 lần)',           type:'special'},
+  suicidal:   {name:'Kẻ Chán Đời',   icon:'💀',team:'solo',   ability:'Mục tiêu: bị vote chết. Thắng một mình nếu bị làng xử tử', type:'solo'},
+  cupid:      {name:'Thần Tình Yêu',  icon:'💘',team:'village',ability:'Đêm đầu chọn 2 người yêu nhau',                       type:'special'},
 };
-const NIGHT_ORDER = ['cupid','seer','doctor','witch','wolf'];
+const NIGHT_ORDER = ['cupid','seer','guard','doctor','witch','wolf','traitor','wolfcub'];
 const AVATARS = ['🧑','👩','🧔','👱','🧛','🧝','🧜','🧞','🧟','🧙','👸','🤴'];
-const DEF_ROLES = {wolf:2,villager:3,seer:1,doctor:1,hunter:0,witch:0,idiot:0,cupid:0};
+const DEF_ROLES = {wolf:2,villager:3,seer:1,doctor:1,guard:0,hunter:0,witch:0,idiot:0,suicidal:0,wolfcub:0,traitor:0,cupid:0};
 
 // ── LOCAL STATE ────────────────────────────────────────────────
 let L = { code:'',myId:'',myName:'',isHost:false,
@@ -533,7 +536,7 @@ function renderLobby() {
     if(p){
       d.innerHTML=`<span class="pav">${p.avatar}</span><span class="pnm">${E(p.name)}</span>
         <div style="display:flex;gap:3px;">${p.isHost?'<span class="badge badge-host">HOST</span>':''}${pid===L.myId?'<span class="badge badge-me">BẠN</span>':''}</div>`;
-    } else d.innerHTML=`<span style="font-size:1.3rem;opacity:.13;">+</span><span style="font-size:.72rem;opacity:.28;">Chờ...</span>`;
+    } else d.innerHTML=`<span style="font-size:1.3rem;opacity:.13;">+</span><span style="font-size:.82rem;opacity:.28;">Chờ...</span>`;
     g.appendChild(d);
   }
   // Role config
@@ -541,7 +544,7 @@ function renderLobby() {
   if(L.isHost){ renderRoleCfg(); }
   else {
     rc.innerHTML=`<div class="card-title">⚙ Vai Trò</div>
-      <p style="font-style:italic;color:rgba(200,180,160,.5);font-size:.85rem;text-align:center;margin-top:8px;">Host đang cấu hình...</p>
+      <p style="font-style:italic;color:rgba(210,190,170,.65);font-size:.85rem;text-align:center;margin-top:8px;">Host đang cấu hình...</p>
       <div style="margin-top:14px;" id="roleView"></div>`;
     const rv=document.getElementById('roleView');
     if(rv&&R.roles) Object.entries(R.roles).forEach(([k,v])=>{
@@ -556,7 +559,7 @@ function renderRoleCfg() {
   const el=document.getElementById('roleCfg'); if(!el) return;
   el.innerHTML='';
   const roles=R.roles||DEF_ROLES;
-  ['wolf','villager','seer','doctor','hunter','witch','idiot','cupid'].forEach(k=>{
+  ['wolf','wolfcub','traitor','villager','seer','doctor','guard','hunter','witch','idiot','suicidal','cupid'].forEach(k=>{
     const r=ROLES[k],cnt=roles[k]||0,max=k==='wolf'?4:k==='villager'?8:1;
     const d=document.createElement('div'); d.className='role-row';
     d.innerHTML=`<div class="role-info-c"><span class="ri">${r.icon}</span>
@@ -597,6 +600,7 @@ window.hostStart = async function() {
     nightKillTarget:null,witchSaved:true,witchPoisoned:true,revealAll:false,gameLog:[],winner:null,idiotRevealed:false});
   await remove(cr());
   await sysChat('🎮 Game bắt đầu! Đêm 1 đang diễn ra...');
+  L.localReveal=false;
   setTimeout(hostRunNight,800);
 };
 
@@ -621,7 +625,7 @@ function renderPlayers(){
   const votes=R.votes||{},tally={};
   Object.values(votes).forEach(v=>{tally[v]=(tally[v]||0)+1;});
   Object.entries(R.players||{}).forEach(([pid,p])=>{
-    const isMe=pid===L.myId,showRole=L.localReveal||!p.alive||isMe;
+    const isMe=pid===L.myId,showRole=(!p.alive&&R.phase==='gameover')||isMe;
     const d=document.createElement('div');
     d.className='pcard'+(p.alive?'':' dead')+(isMe?' self':'');
     if(L.sel===pid&&p.alive&&!isMe) d.classList.add('selected');
@@ -637,15 +641,16 @@ function renderPlayers(){
 function renderMyRole(){
   const me=(R.players||{})[L.myId]; if(!me?.role) return;
   const r=ROLES[me.role]; let ex='';
-  if(me.role==='wolf'){
-    const wp=Object.entries(R.players||{}).filter(([id,p])=>p.role==='wolf'&&id!==L.myId&&p.alive).map(([,p])=>p.name).join(', ');
-    if(wp) ex+=`<div class="wolf-partners">🐺 Đồng bọn: ${E(wp)}</div>`;
+  if(['wolf','wolfcub','traitor'].includes(me.role)){
+    const wolfRoles=['wolf','wolfcub','traitor'];
+    const wp=Object.entries(R.players||{}).filter(([id,p])=>wolfRoles.includes(p.role)&&id!==L.myId).map(([,p])=>p.name+' ('+ROLES[p.role].name+')').join(', ');
+    if(wp) ex+=`<div class="wolf-partners">🐺 Phe Sói: ${E(wp)}</div>`;
   }
   const lv=R.lovers||[];
   if(lv.includes(L.myId)){const pid=lv.find(id=>id!==L.myId);const lp=(R.players||{})[pid];if(lp) ex+=`<div class="lovers-display">💕 Người yêu: ${E(lp.name)}</div>`;}
   document.getElementById('myRoleDiv').innerHTML=`<div class="my-role-card ${r.type}">
     <div class="mr-icon">${r.icon}</div><div class="mr-name">${r.name}</div><div class="mr-ability">${r.ability}</div>${ex}
-    ${me.role==='witch'?`<div style="font-size:.7rem;margin-top:4px;color:#aaa;">💊 Cứu: ${R.witchSaved?'Còn':'Hết'} | ☠ Độc: ${R.witchPoisoned?'Còn':'Hết'}</div>`:''}
+    ${me.role==='witch'?`<div style="font-size:.82rem;margin-top:4px;color:#aaa;">💊 Cứu: ${R.witchSaved?'Còn':'Hết'} | ☠ Độc: ${R.witchPoisoned?'Còn':'Hết'}</div>`:''}
   </div>`;
 }
 function renderLog(){
@@ -746,10 +751,29 @@ function buildNovTargets(role){
     b.innerHTML=`<span class="nt-av">${prefix||p.avatar}</span><span class="nt-nm">${label||E(p.name)}</span>`;
     b.onclick=cb; tDiv.appendChild(b); return b;
   };
-  if(role==='wolf') others.filter(([,p])=>p.role!=='wolf').forEach(([id,p])=>addBtn(id,p,'',()=>{
-    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
-    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
-  }));
+  const wolfRoles=['wolf','wolfcub','traitor'];
+  if(role==='wolf'){
+    const doubleBite=R.wolfcubDied===true;
+    if(doubleBite){
+      // Header thông báo
+      const info=document.createElement('div');
+      info.style.cssText='text-align:center;color:#ff8080;font-style:italic;font-size:.85rem;padding:6px 0 10px;width:100%;';
+      info.textContent='🐾 Sói Con đã chết — chọn 2 nạn nhân đêm nay!';
+      tDiv.appendChild(info);
+    }
+    others.filter(([,p])=>!wolfRoles.includes(p.role)).forEach(([id,p])=>addBtn(id,p,'',()=>{
+      if(doubleBite){
+        const b2=tDiv.querySelector(`[data-pid="${id}"]`);
+        if(L.npickArr.includes(id)){L.npickArr=L.npickArr.filter(x=>x!==id);b2.classList.remove('selected');}
+        else if(L.npickArr.length<2){L.npickArr.push(id);b2.classList.add('selected');}
+        btn.disabled=L.npickArr.length!==2;
+      } else {
+        L.npick=id; btn.disabled=false;
+        tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+        tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+      }
+    }));
+  }
   else if(role==='seer') others.forEach(([id,p])=>addBtn(id,p,'',()=>{
     L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
     tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
@@ -758,6 +782,24 @@ function buildNovTargets(role){
     L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
     tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
   }));
+  else if(role==='guard') others.forEach(([id,p])=>addBtn(id,p,'',()=>{
+    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
+  }));
+  else if(role==='wolfcub'||role==='traitor'){
+    // wolfcub và traitor không có hành động ban đêm riêng
+    const info=document.createElement('div');
+    info.style.cssText='text-align:center;color:rgba(200,180,160,.6);font-style:italic;font-size:.85rem;padding:10px;';
+    info.textContent=role==='wolfcub'?'Sói Con không có hành động riêng ban đêm.':'Bán Sói chưa kích hoạt — chờ sói chết hết.';
+    tDiv.appendChild(info); btn.textContent='Xong'; btn.disabled=false;
+  }
+  else if(role==='suicidal'){
+    // Kẻ chán đời không có hành động đêm
+    const info=document.createElement('div');
+    info.style.cssText='text-align:center;color:rgba(200,180,160,.6);font-style:italic;font-size:.85rem;padding:10px;';
+    info.textContent='Kẻ Chán Đời không hành động ban đêm. Hãy khéo léo để bị vote ban ngày!';
+    tDiv.appendChild(info); btn.textContent='Xong'; btn.disabled=false;
+  }
   else if(role==='cupid') alive.forEach(([id,p])=>addBtn(id,p,'',()=>{
     const b2=tDiv.querySelector(`[data-pid="${id}"]`);
     if(L.npickArr.includes(id)){L.npickArr=L.npickArr.filter(x=>x!==id);b2.classList.remove('selected');}
@@ -785,7 +827,15 @@ function buildNovTargets(role){
 window.submitNightAction = async function(){
   const role=L.curNightRole; if(!role) return;
   const upd={};
-  if(role==='wolf'&&L.npick) upd['nightKillTarget']=L.npick;
+  if(role==='wolf'){
+    if(R.wolfcubDied&&L.npickArr.length===2){
+      upd['nightKillTarget']=L.npickArr[0];
+      upd['nightKillTarget2']=L.npickArr[1];
+      upd['wolfcubDied']=false; // reset flag
+    } else if(L.npick){
+      upd['nightKillTarget']=L.npick;
+    }
+  }
   else if(role==='seer'&&L.npick){const t=(R.players||{})[L.npick];if(t){const tr=ROLES[t.role];toast(`🔮 ${t.name} là: ${tr.icon} ${tr.name}!`,5000);}}
   else if(role==='doctor'&&L.npick) upd['nightActions/doctorSave']=L.npick;
   else if(role==='witch'){
@@ -797,6 +847,8 @@ window.submitNightAction = async function(){
     const n1=(R.players||{})[L.npickArr[0]]?.name,n2=(R.players||{})[L.npickArr[1]]?.name;
     toast(`💘 ${n1} và ${n2} đã yêu nhau!`);
   }
+  else if(role==='guard'&&L.npick) upd['nightActions/guardSave']=L.npick;
+  else if(role==='wolfcub'||role==='traitor'||role==='suicidal'){/* no night action */}
   upd['nightActed/'+role]='done';
   if(Object.keys(upd).length) await update(rr(),upd);
   playSound('action'); document.getElementById('nightOv').classList.remove('show');
@@ -807,7 +859,7 @@ window.submitNightAction = async function(){
 // ── HOST NIGHT ENGINE ──────────────────────────────────────────
 async function hostRunNight(){
   if(!L.isHost) return;
-  await update(rr(),{nightActed:{},nightActions:{},nightKillTarget:null,phase:'night'});
+  await update(rr(),{nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,phase:'night'});
   await sysChat(`🌑 Đêm ${R.round||1} bắt đầu...`);
 }
 async function hostCheckNight(){
@@ -823,14 +875,24 @@ async function hostResolveNight(r2){
   if(!L.isHost) return;
   const pl={...r2.players},na=r2.nightActions||{},chats=[],log=[...(r2.gameLog||[])];
   let deaths=[];
-  if(r2.nightKillTarget){
-    if(na.doctorSave===r2.nightKillTarget||na.witchSave===r2.nightKillTarget){chats.push({system:true,text:'💊 Ai đó đã được cứu sống đêm nay!',ts:Date.now()});log.push({text:'💊 Nạn nhân được cứu!',cls:'good'});}
-    else deaths.push({pid:r2.nightKillTarget,reason:'wolf'});
-  }
+  const resolveKill=(targetId)=>{
+    if(!targetId) return;
+    const saved=na.doctorSave===targetId||na.witchSave===targetId||na.guardSave===targetId;
+    if(saved){chats.push({system:true,text:'🛡️ Ai đó đã được bảo vệ đêm nay!',ts:Date.now()});log.push({text:'🛡️ Nạn nhân được bảo vệ!',cls:'good'});}
+    else deaths.push({pid:targetId,reason:'wolf'});
+  };
+  resolveKill(r2.nightKillTarget);
+  resolveKill(r2.nightKillTarget2); // double bite khi sói con đã chết
   if(na.witchPoison) deaths.push({pid:na.witchPoison,reason:'poison'});
+  // Bán Sói: kích hoạt khi không còn sói nào sống
+  const realWolvesAlive=Object.values(r2.players||{}).filter(p=>p.role==='wolf'&&p.alive).length;
+  if(realWolvesAlive===0){
+    const traitorId=Object.entries(r2.players||{}).find(([,p])=>p.role==='traitor'&&p.alive)?.[0];
+    if(traitorId){chats.push({system:true,text:'🦹 Bán Sói đã lộ mặt và kế thừa phe Sói!',ts:Date.now()});log.push({text:'🦹 Bán Sói kích hoạt!',cls:'death'});}
+  }
   for(const d of deaths) await applyDeath(pl,d.pid,d.reason,chats,log,r2);
   const newRound=(r2.round||1)+1;
-  await update(rr(),{players:pl,phase:'day',round:newRound,nightActed:{},nightActions:{},nightKillTarget:null,gameLog:log,votes:{}});
+  await update(rr(),{players:pl,phase:'day',round:newRound,nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,wolfcubDied:R.wolfcubDied||false,gameLog:log,votes:{}});
   for(const m of chats) await push(cr(),m);
   await sysChat(`☀️ Ngày ${newRound-1} — Làng thức dậy và thảo luận!`);
   const r3=await rget(); if(!await hostCheckWin(r3)) setTimeout(()=>hostStartVote(),30000);
@@ -841,6 +903,14 @@ async function applyDeath(pl,pid,reason,chats,log,r2,chain=true){
     await update(rr(),{idiotRevealed:true});
     chats.push({system:true,text:`🤡 ${p.name} là Kẻ Ngốc! Lộ bài nhưng không chết.`,ts:Date.now()});
     log.push({text:`🤡 ${p.name} (Kẻ Ngốc) không chết!`,cls:'info'}); return;
+  }
+  if(reason==='vote'&&p.role==='suicidal'){
+    // Kẻ chán đời thắng khi bị vote chết!
+    chats.push({system:true,text:`💀 ${p.name} là Kẻ Chán Đời — đã đạt mục tiêu! Kẻ Chán Đời thắng!`,ts:Date.now()});
+    log.push({text:`💀 ${p.name} (Kẻ Chán Đời) thắng một mình!`,cls:'info'});
+    p.alive=false;
+    await update(rr(),{players:{...r2.players,[pid]:p},phase:'gameover',winner:'suicidal'});
+    return;
   }
   p.alive=false;
   const r=ROLES[p.role],reasons={wolf:'bị Ma Sói tấn công',poison:'bị đầu độc',vote:'bị làng trục xuất',lover:'vì người yêu chết',hunter:'bị Thợ Săn bắn'};
@@ -855,6 +925,12 @@ async function applyDeath(pl,pid,reason,chats,log,r2,chain=true){
     const tgts=Object.entries(pl).filter(([id,pp])=>pp.alive&&id!==pid);
     if(tgts.length){const[tid]=tgts[Math.floor(Math.random()*tgts.length)];await applyDeath(pl,tid,'hunter',chats,log,r2,true);}
   }
+  // Sói Con chết → đêm sau sói cắn 2 người
+  if(p.role==='wolfcub'){
+    chats.push({system:true,text:`🐾 Sói Con đã chết! Đêm nay sói sẽ được cắn 2 người!`,ts:Date.now()+50});
+    log.push({text:`🐾 Sói Con chết — sói cắn 2 lần đêm sau!`,cls:'death'});
+    await update(rr(),{wolfcubDied:true});
+  }
 }
 async function hostStartVote(){
   if(!L.isHost) return;
@@ -867,6 +943,7 @@ async function hostResolveVote(r2=null){
   if(!L.isHost) return;
   if(!r2){const snap=await rget();r2=snap;}
   if(r2.phase!=='vote') return;
+  // (wolfcub no longer skips vote)
   const votes=r2.votes||{},tally={};
   Object.values(votes).forEach(v=>{tally[v]=(tally[v]||0)+1;});
   let maxV=0,victim=null;
@@ -881,11 +958,17 @@ async function hostResolveVote(r2=null){
 async function hostCheckWin(r2){
   if(!L.isHost) return false;
   const alive=Object.values(r2.players||{}).filter(p=>p.alive);
-  const wolves=alive.filter(p=>p.role==='wolf').length,others=alive.filter(p=>p.role!=='wolf').length;
+  const wolfRoles=['wolf','wolfcub','traitor'];
+  const wolves=alive.filter(p=>wolfRoles.includes(p.role)).length;
+  // Traitor chỉ tính là sói khi không còn wolf/wolfcub thật nào
+  const realWolves=alive.filter(p=>p.role==='wolf'||p.role==='wolfcub').length;
+  const activeWolves=realWolves>0?realWolves:alive.filter(p=>p.role==='traitor').length;
+  const others=alive.filter(p=>!wolfRoles.includes(p.role)&&p.role!=='suicidal').length;
   const lv=(r2.lovers||[]).filter(id=>(r2.players||{})[id]?.alive);
+  if(r2.winner==='suicidal') return true; // already ended
   if(lv.length===2&&alive.length===2){await endGame('lovers');return true;}
-  if(wolves===0){await endGame('village');return true;}
-  if(wolves>=others){await endGame('wolf');return true;}
+  if(activeWolves===0){await endGame('village');return true;}
+  if(activeWolves>=others){await endGame('wolf');return true;}
   return false;
 }
 async function endGame(winner){
@@ -898,10 +981,11 @@ async function endGame(winner){
 function renderGameover(){
   L.localReveal=true; // gameover = reveal all for everyone
   const w=R.winner||'village',bn=document.getElementById('goBanner');
-  bn.className='go-banner '+{wolf:'wolves',village:'village',lovers:'lovers'}[w];
+  bn.className='go-banner '+({wolf:'wolves',village:'village',lovers:'lovers',suicidal:'wolves'}[w]||'village');
   const cfg={wolf:{icon:'🐺',title:'MA SÓI THẮNG!',sub:'Bóng tối nuốt chửng làng...'},
     village:{icon:'🌅',title:'DÂN LÀNG THẮNG!',sub:'Ánh sáng đẩy lùi bóng tối! Làng bình yên!'},
-    lovers:{icon:'💕',title:'TÌNH YÊU THẮNG!',sub:'Chỉ còn hai trái tim yêu nhau...'}};
+    lovers:{icon:'💕',title:'TÌNH YÊU THẮNG!',sub:'Chỉ còn hai trái tim yêu nhau...'},
+    suicidal:{icon:'💀',title:'KẺ CHÁN ĐỜI THẮNG!',sub:'Hắn đã đạt được điều mình muốn... một cái chết.'}};
   const c=cfg[w];
   document.getElementById('goIcon').textContent=c.icon;
   document.getElementById('goTitle').textContent=c.title;
@@ -913,11 +997,13 @@ function renderGameover(){
   });
 }
 window.playAgain = async function(){
+  // Reset local reveal cho tất cả mọi người khi về lobby
+  L.localReveal=false;
   if(L.isHost){
     const pl={};
     Object.entries(R.players||{}).forEach(([id,p])=>{pl[id]={...p,role:null,alive:true};});
-    await update(rr(),{players:pl,phase:'lobby',round:0,revealAll:false,votes:{},nightActed:{},nightActions:{},
-      lovers:[],nightKillTarget:null,witchSaved:true,witchPoisoned:true,gameLog:[],winner:null,idiotRevealed:false});
+    await update(rr(),{players:pl,phase:'lobby',round:0,votes:{},nightActed:{},nightActions:{},
+      lovers:[],nightKillTarget:null,nightKillTarget2:null,wolfcubDied:false,witchSaved:true,witchPoisoned:true,gameLog:[],winner:null,idiotRevealed:false});
     await remove(cr());
   } else toast('Chờ host bắt đầu game mới!');
 };
@@ -934,12 +1020,7 @@ window.hostSkip = async function(){
   } else if(r2.phase==='day') await hostStartVote();
   else if(r2.phase==='vote') await hostResolveVote(r2);
 };
-window.hostToggleReveal = function(){
-  if(!L.isHost) return;
-  L.localReveal=!L.localReveal;
-  toast(L.localReveal?'👁 Bạn (host) đang xem bài — người khác không thấy':'🙈 Đã ẩn bài');
-  renderPlayers();
-};
+// hostToggleReveal removed — host cannot peek at roles
 window.hostKick = async function(pid){
   if(!L.isHost) return;
   const name=(R.players||{})[pid]?.name;
