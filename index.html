@@ -415,7 +415,6 @@ const ROLES = {
   traitor:    {name:'Bán Sói',        icon:'🦹',team:'wolf',   ability:'Trông như dân làng, chỉ gia nhập phe sói khi sói chết hết', type:'wolf'},
   villager:   {name:'Dân Làng',       icon:'👨‍🌾',team:'village',ability:'Phán đoán và bỏ phiếu ban ngày',                      type:'villager'},
   seer:       {name:'Tiên Tri',       icon:'🔮',team:'village',ability:'Mỗi đêm xem danh tính 1 người',                       type:'special'},
-  doctor:     {name:'Thầy Thuốc',     icon:'💊',team:'village',ability:'Mỗi đêm cứu 1 người (kể cả bản thân)',                type:'special'},
   guard:      {name:'Bảo Vệ',        icon:'🛡️',team:'village',ability:'Mỗi đêm bảo vệ 1 người (không được bảo vệ cùng người 2 đêm liên tiếp)', type:'special'},
   hunter:     {name:'Thợ Săn',        icon:'🏹',team:'village',ability:'Khi chết bắn chết 1 người',                           type:'special'},
   witch:      {name:'Phù Thủy',       icon:'🧙‍♀️',team:'village',ability:'Có 1 thuốc cứu và 1 thuốc độc',                       type:'special'},
@@ -423,9 +422,9 @@ const ROLES = {
   suicidal:   {name:'Kẻ Chán Đời',   icon:'💀',team:'solo',   ability:'Mục tiêu: bị vote chết. Thắng một mình nếu bị làng xử tử', type:'solo'},
   cupid:      {name:'Thần Tình Yêu',  icon:'💘',team:'village',ability:'Đêm đầu chọn 2 người yêu nhau',                       type:'special'},
 };
-const NIGHT_ORDER = ['cupid','seer','guard','doctor','witch','wolf','traitor','wolfcub'];
+const NIGHT_ORDER = ['cupid','seer','guard','witch','wolf','traitor','wolfcub'];
 const AVATARS = ['🧑','👩','🧔','👱','🧛','🧝','🧜','🧞','🧟','🧙','👸','🤴'];
-const DEF_ROLES = {wolf:2,villager:3,seer:1,doctor:1,guard:0,hunter:0,witch:0,idiot:0,suicidal:0,wolfcub:0,traitor:0,cupid:0};
+const DEF_ROLES = {wolf:2,villager:3,seer:1,guard:0,hunter:0,witch:0,idiot:0,suicidal:0,wolfcub:0,traitor:0,cupid:0};
 
 // ── LOCAL STATE ────────────────────────────────────────────────
 let L = { code:'',myId:'',myName:'',isHost:false,
@@ -482,7 +481,7 @@ window.createRoom = async function() {
   showLoad(); L.code=genCode(); L.myId='p'+Date.now(); L.myName=name; L.isHost=true;
   await set(rr(), {
     code:L.code, hostId:L.myId, phase:'lobby', round:0, roles:{...DEF_ROLES},
-    revealAll:false, witchSaved:true, witchPoisoned:true, lovers:[], nightKillTarget:null,
+    witchSaved:true, witchPoisoned:true, lovers:[], nightKillTarget:null,
     nightActed:{}, nightActions:{}, votes:{}, gameLog:[], idiotRevealed:false, winner:null,
     players:{ [L.myId]:{name,avatar:rndAv(),role:null,alive:true,isHost:true} }
   });
@@ -559,7 +558,7 @@ function renderRoleCfg() {
   const el=document.getElementById('roleCfg'); if(!el) return;
   el.innerHTML='';
   const roles=R.roles||DEF_ROLES;
-  ['wolf','wolfcub','traitor','villager','seer','doctor','guard','hunter','witch','idiot','suicidal','cupid'].forEach(k=>{
+  ['wolf','wolfcub','traitor','villager','seer','guard','hunter','witch','idiot','suicidal','cupid'].forEach(k=>{
     const r=ROLES[k],cnt=roles[k]||0,max=k==='wolf'?4:k==='villager'?8:1;
     const d=document.createElement('div'); d.className='role-row';
     d.innerHTML=`<div class="role-info-c"><span class="ri">${r.icon}</span>
@@ -778,10 +777,6 @@ function buildNovTargets(role){
     L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
     tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
   }));
-  else if(role==='doctor') alive.forEach(([id,p])=>addBtn(id,p,'',()=>{
-    L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
-    tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
-  }));
   else if(role==='guard') others.forEach(([id,p])=>addBtn(id,p,'',()=>{
     L.npick=id; btn.disabled=false; tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
     tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
@@ -837,7 +832,6 @@ window.submitNightAction = async function(){
     }
   }
   else if(role==='seer'&&L.npick){const t=(R.players||{})[L.npick];if(t){const tr=ROLES[t.role];toast(`🔮 ${t.name} là: ${tr.icon} ${tr.name}!`,5000);}}
-  else if(role==='doctor'&&L.npick) upd['nightActions/doctorSave']=L.npick;
   else if(role==='witch'){
     if(L.npick==='__save'){upd['nightActions/witchSave']=R.nightKillTarget;upd['witchSaved']=false;}
     else if(L.npick?.startsWith('__poison__')){upd['nightActions/witchPoison']=L.npick.replace('__poison__','');upd['witchPoisoned']=false;}
@@ -877,7 +871,7 @@ async function hostResolveNight(r2){
   let deaths=[];
   const resolveKill=(targetId)=>{
     if(!targetId) return;
-    const saved=na.doctorSave===targetId||na.witchSave===targetId||na.guardSave===targetId;
+    const saved=na.witchSave===targetId||na.guardSave===targetId;
     if(saved){chats.push({system:true,text:'🛡️ Ai đó đã được bảo vệ đêm nay!',ts:Date.now()});log.push({text:'🛡️ Nạn nhân được bảo vệ!',cls:'good'});}
     else deaths.push({pid:targetId,reason:'wolf'});
   };
@@ -901,22 +895,22 @@ async function applyDeath(pl,pid,reason,chats,log,r2,chain=true){
   const p=pl[pid]; if(!p?.alive) return;
   if(reason==='vote'&&p.role==='idiot'&&!r2.idiotRevealed){
     await update(rr(),{idiotRevealed:true});
-    chats.push({system:true,text:`🤡 ${p.name} là Kẻ Ngốc! Lộ bài nhưng không chết.`,ts:Date.now()});
+    chats.push({system:true,text:`🤡 ${p.name} lộ bài — không thể bị vote nữa!`,ts:Date.now()});
     log.push({text:`🤡 ${p.name} (Kẻ Ngốc) không chết!`,cls:'info'}); return;
   }
   if(reason==='vote'&&p.role==='suicidal'){
     // Kẻ chán đời thắng khi bị vote chết!
-    chats.push({system:true,text:`💀 ${p.name} là Kẻ Chán Đời — đã đạt mục tiêu! Kẻ Chán Đời thắng!`,ts:Date.now()});
+    chats.push({system:true,text:`💀 ${p.name} đã chết — và đây chính là mục tiêu của hắn! Kẻ Chán Đời thắng!`,ts:Date.now()});
     log.push({text:`💀 ${p.name} (Kẻ Chán Đời) thắng một mình!`,cls:'info'});
     p.alive=false;
     await update(rr(),{players:{...r2.players,[pid]:p},phase:'gameover',winner:'suicidal'});
     return;
   }
   p.alive=false;
-  const r=ROLES[p.role],reasons={wolf:'bị Ma Sói tấn công',poison:'bị đầu độc',vote:'bị làng trục xuất',lover:'vì người yêu chết',hunter:'bị Thợ Săn bắn'};
-  const msg=`💀 ${p.name} (${r.icon} ${r.name}) chết — ${reasons[reason]||''}`;
+  const reasons={wolf:'bị Ma Sói tấn công',poison:'bị đầu độc',vote:'bị làng trục xuất',lover:'vì người yêu chết',hunter:'bị Thợ Săn bắn'};
+  const msg=`💀 ${p.name} đã chết — ${reasons[reason]||''}`;
   chats.push({system:true,text:msg,ts:Date.now()+Math.random()*100}); if(L.myId===pid||true) setTimeout(()=>playSound('death'),100);
-  log.push({text:msg,cls:'death'});
+  log.push({text:`💀 ${p.name} đã chết`,cls:'death'});
   if(chain&&(r2.lovers||[]).includes(pid)){
     const partner=(r2.lovers||[]).find(id=>id!==pid);
     if(partner&&pl[partner]?.alive) await applyDeath(pl,partner,'lover',chats,log,r2,false);
