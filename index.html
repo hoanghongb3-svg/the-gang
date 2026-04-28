@@ -411,7 +411,7 @@ try {
 // ── CONSTANTS ──────────────────────────────────────────────────
 const ROLES = {
   wolf:       {name:'Ma Sói',         icon:'🐺',team:'wolf',   ability:'Mỗi đêm chọn 1 người để giết',                        type:'wolf'},
-  wolfcub:    {name:'Sói Con',        icon:'🐾',team:'wolf',   ability:'Khi chết, làng mất lượt vote hôm đó',                 type:'wolf'},
+  wolfcub:    {name:'Sói Con',        icon:'🐾',team:'wolf',   ability:'Khi chết, đêm tiếp theo sói được giết thêm 1 người',                 type:'wolf'},
   traitor:    {name:'Bán Sói',        icon:'🦹',team:'wolf',   ability:'Trông như dân làng, chỉ gia nhập phe sói khi sói chết hết', type:'wolf'},
   villager:   {name:'Dân Làng',       icon:'👨‍🌾',team:'village',ability:'Phán đoán và bỏ phiếu ban ngày',                      type:'villager'},
   seer:       {name:'Tiên Tri',       icon:'🔮',team:'village',ability:'Mỗi đêm xem danh tính 1 người',                       type:'special'},
@@ -733,7 +733,7 @@ function showNightOv(role){
   const ov=document.getElementById('nightOv'); ov.classList.add('show');
   const btn=document.getElementById('novBtn'); btn.disabled=true; btn.textContent='Xác Nhận';
   L.npick=null; L.npickArr=[];
-  const descs={wolf:'Ma Sói thức dậy... chọn người muốn tiêu diệt.',seer:'Tiên Tri thức dậy... chọn người để xem danh tính.',
+  const descs={wolf:R.wolfcubDied?'🐾 Sói Con đã chết đêm trước — chọn 2 nạn nhân đêm nay!':'Ma Sói thức dậy... chọn người muốn tiêu diệt.',seer:'Tiên Tri thức dậy... chọn người để xem danh tính.',
     doctor:'Thầy Thuốc thức dậy... chọn người muốn cứu (kể cả bản thân).',witch:'Phù Thủy thức dậy... dùng thuốc hay bỏ qua.',
     cupid:'Thần Tình Yêu thức dậy... chọn 2 người sẽ yêu nhau!'};
   document.getElementById('novTitle').textContent=ROLES[role].icon+' '+ROLES[role].name;
@@ -754,23 +754,16 @@ function buildNovTargets(role){
   if(role==='wolf'){
     const doubleBite=R.wolfcubDied===true;
     if(doubleBite){
-      // Header thông báo
       const info=document.createElement('div');
       info.style.cssText='text-align:center;color:#ff8080;font-style:italic;font-size:.85rem;padding:6px 0 10px;width:100%;';
       info.textContent='🐾 Sói Con đã chết — chọn 2 nạn nhân đêm nay!';
       tDiv.appendChild(info);
     }
     others.filter(([,p])=>!wolfRoles.includes(p.role)).forEach(([id,p])=>addBtn(id,p,'',()=>{
-      if(doubleBite){
-        const b2=tDiv.querySelector(`[data-pid="${id}"]`);
-        if(L.npickArr.includes(id)){L.npickArr=L.npickArr.filter(x=>x!==id);b2.classList.remove('selected');}
-        else if(L.npickArr.length<2){L.npickArr.push(id);b2.classList.add('selected');}
-        btn.disabled=L.npickArr.length!==2;
-      } else {
-        L.npick=id; btn.disabled=false;
-        tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
-        tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
-      }
+      // Luôn chọn 1 (nightKillTarget2 cho double bite, nightKillTarget cho bình thường)
+      L.npick=id; btn.disabled=false;
+      tDiv.querySelectorAll('.ntbtn').forEach(b=>b.classList.remove('selected'));
+      tDiv.querySelector(`[data-pid="${id}"]`).classList.add('selected');
     }));
   }
   else if(role==='seer') others.forEach(([id,p])=>addBtn(id,p,'',()=>{
@@ -823,10 +816,10 @@ window.submitNightAction = async function(){
   const role=L.curNightRole; if(!role) return;
   const upd={};
   if(role==='wolf'){
-    if(R.wolfcubDied&&L.npickArr.length===2){
-      upd['nightKillTarget']=L.npickArr[0];
-      upd['nightKillTarget2']=L.npickArr[1];
-      upd['wolfcubDied']=false; // reset flag
+    if(R.wolfcubDied&&L.npick){
+      // Double bite: nightKillTarget đã set trước đó, giờ set target thứ 2
+      upd['nightKillTarget2']=L.npick;
+      upd['wolfcubDied']=false;
     } else if(L.npick){
       upd['nightKillTarget']=L.npick;
     }
@@ -853,7 +846,9 @@ window.submitNightAction = async function(){
 // ── HOST NIGHT ENGINE ──────────────────────────────────────────
 async function hostRunNight(){
   if(!L.isHost) return;
-  await update(rr(),{nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,phase:'night'});
+  const curState=await rget();
+  await update(rr(),{nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,phase:'night',
+    wolfcubDied:curState?.wolfcubDied||false});
   await sysChat(`🌑 Đêm ${R.round||1} bắt đầu...`);
 }
 async function hostCheckNight(){
@@ -886,7 +881,8 @@ async function hostResolveNight(r2){
   }
   for(const d of deaths) await applyDeath(pl,d.pid,d.reason,chats,log,r2);
   const newRound=(r2.round||1)+1;
-  await update(rr(),{players:pl,phase:'day',round:newRound,nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,wolfcubDied:R.wolfcubDied||false,gameLog:log,votes:{}});
+  const keepWolfcubDied=r2.wolfcubDied||false; // giữ flag qua ngày, reset khi wolf đã dùng
+  await update(rr(),{players:pl,phase:'day',round:newRound,nightActed:{},nightActions:{},nightKillTarget:null,nightKillTarget2:null,wolfcubDied:keepWolfcubDied,gameLog:log,votes:{}});
   for(const m of chats) await push(cr(),m);
   await sysChat(`☀️ Ngày ${newRound-1} — Làng thức dậy và thảo luận!`);
   const r3=await rget(); if(!await hostCheckWin(r3)) setTimeout(()=>hostStartVote(),30000);
@@ -921,8 +917,8 @@ async function applyDeath(pl,pid,reason,chats,log,r2,chain=true){
   }
   // Sói Con chết → đêm sau sói cắn 2 người
   if(p.role==='wolfcub'){
-    chats.push({system:true,text:`🐾 Sói Con đã chết! Đêm nay sói sẽ được cắn 2 người!`,ts:Date.now()+50});
-    log.push({text:`🐾 Sói Con chết — sói cắn 2 lần đêm sau!`,cls:'death'});
+    chats.push({system:true,text:`🐾 Sói Con đã chết! Đêm tới sói sẽ cắn được 2 người!`,ts:Date.now()+50});
+    log.push({text:`🐾 Sói Con chết — đêm sau sói cắn 2 người!`,cls:'death'});
     await update(rr(),{wolfcubDied:true});
   }
 }
